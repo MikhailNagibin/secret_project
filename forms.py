@@ -1,6 +1,5 @@
 from wtforms import *
 from flask_wtf import *
-from flask_wtf.file import *
 from wtforms.validators import *
 
 
@@ -25,12 +24,3 @@ class RegistrationForm(FlaskForm):
     surname = StringField("Фамилия пользователя", validators=[DataRequired()])
     role = SelectField("Введите Вашу роль", choices=((1, 'Пользователь'), ))
     submit = SubmitField("Зарегистрироваться")
-
-
-class InventoryForm(FlaskForm):
-    name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired(), NumberRange(min=0, message="Количество должно быть неотрицательным")])
-    status = SelectField("Состояние", choices=[("new", "Новый"), ("used", "Используемый"), ("broken", "Сломанный")])
-    submit = SubmitField("Добавить")
-
-
