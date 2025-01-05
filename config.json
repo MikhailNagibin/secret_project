@@ -1,7 +1,7 @@
 {
   "DATABASE": "predprof",
   "USER": "postgres",
-  "PASSWORD": "325897uifhIUYD72",
+  "PASSWORD": "",
   "HOST": "localhost",
   "PORT": "5432"
 }
