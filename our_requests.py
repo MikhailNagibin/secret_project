@@ -1,5 +1,5 @@
 import psycopg2
-from werkzeug.security import generate_password_hash
+from hashlib import sha256
 import json
 
 
@@ -18,7 +18,7 @@ def get_db_connection() -> psycopg2.extensions.connection:
 
 
 def generate_password(password): # получить хеш пароля
-    return generate_password_hash(password)
+    return sha256(password.encode()).hexdigest()
 
 
 def get_user_by_id(cur: psycopg2.extensions.cursor, id: int) -> list[tuple]: #получить информацию о польователе по его id
