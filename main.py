@@ -1,4 +1,4 @@
-#Todo написать бэкенд для  регистрации пользователей
+
 
 from flask import *
 from flask_login import *
