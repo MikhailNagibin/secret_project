@@ -35,6 +35,7 @@ def get_role_by_id(cur: psycopg2.extensions.cursor, role: str) -> list[tuple]:
     cur.execute('select id from Roles where role = %s', (role, ))
     return cur.fetchall()
 
+
 def get_roles(cur: psycopg2.extensions.cursor) -> list[tuple]:
     cur.execute("select * from Roles where role != 'Администратор'")
     return cur.fetchall()
@@ -43,7 +44,8 @@ def get_roles(cur: psycopg2.extensions.cursor) -> list[tuple]:
 def add_user(conn: psycopg2.extensions.connection, data: tuple) -> None: # внести нового пользователя в бд
     cur = conn.cursor()
     cur.execute(
-        "insert into users(firstname, surname, email, user_password, role_id) values (%s, %s, %s, %s, %s)",
+        "insert into users(firstname, surname, email, user_password, role_id) "
+        "values (%s, %s, %s, %s, %s)",
         data,
     )
     conn.commit()

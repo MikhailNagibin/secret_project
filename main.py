@@ -38,7 +38,6 @@ def autorisation():
     form = AutorisationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data.lower())
-        print(generate_password(form.password.data))
         if us and us[0][4] == generate_password(form.password.data):
             user = User(*us[0])
             login_user(user, remember=form.remember_me.data)
@@ -50,6 +49,36 @@ def autorisation():
             message="Неправильный логин или пароль",
         )
     return render_template("login.html", title="Авторизация", form=form, message="")
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def registration():
+    if current_user.is_authenticated:
+        return redirect('/read')
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        us = get_user_by_email(cur, form.email.data)
+        if us:
+            return render_template(
+                "register.html",
+                title="Регистрация",
+                form=form,
+                message="Такой пользователь уже есть",
+            )
+        data = (
+            form.name.data.title(),
+            form.surname.data.title(),
+            form.email.data.lower(),
+            generate_password(form.password.data),
+            int(form.role.data),
+        )
+        add_user(conn, data)
+        us = get_user_by_email(cur, form.email.data)
+        user = User(*us[0])
+        login_user(user)
+        return redirect('/read')
+    return render_template("register.html", title="Регистрация", form=form)
+
 
 
 

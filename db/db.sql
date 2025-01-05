@@ -1,5 +1,5 @@
 create table Roles (
-role_id serial primary key unique ,
+id serial primary key unique ,
 role varchar(50)
 );
 
