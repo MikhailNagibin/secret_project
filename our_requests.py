@@ -1,19 +1,49 @@
-#Todo написать функции подключения к бд (данные брать из файла config.json), получение хеша пароля(подается строка, выдается её хеш),
-# запросы к базе: получение пользователя по его id, получение пользователя по его email,
-# получение id роли по названию, добавление польователя по данным из аргументов функции (пароль передается в нехешированном виде,
-# id создается автоматически в бд), , получение всех ролей кроме администратора
-# (возвращает кортеж (id, role)). Все функции, не вносящие изменения в бд принимают курсор, функция подключения ничего не принимает
-# , возвращает подключение к бд, остальные функции  принимают переменную подключение к бд (+ необходимые аргументы) подробнее смотри ниже
 import psycopg2
 from werkzeug.security import generate_password_hash
 import json
 
 
 def get_db_connection() -> psycopg2.extensions.connection:
-    pass
+    with open("config.json") as f:
+        conf = json.load(f)
+    DATABASE = conf["DATABASE"]
+    USER = conf["USER"]
+    PASSWORD = conf["PASSWORD"]
+    HOST = conf["HOST"]
+    PORT = conf["PORT"]
+    conn = psycopg2.connect(
+        dbname=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT
+    )
+    return conn
 
-def get_user_by_id(cur: psycopg2.extensions.cursor, id: int) -> tuple:
-    pass
 
-def add_user(conn: psycopg2.extensions.connection, data: tuple) -> None:
-    pass
+def generate_password(password): # получить хеш пароля
+    return generate_password_hash(password)
+
+
+def get_user_by_id(cur: psycopg2.extensions.cursor, id: int) -> list[tuple]: #получить информацию о польователе по его id
+    cur.execute('select * from Users where id = %s', (id, ))
+    return cur.fetchall()
+
+
+def get_user_by_email(cur: psycopg2.extensions.cursor, email: str) -> list[tuple]:
+    cur.execute('select * from Users where email = %s', (email, ))
+    return cur.fetchall()
+
+
+def get_role_by_id(cur: psycopg2.extensions.cursor, role: str) -> list[tuple]:
+    cur.execute('select id from Roles where role = %s', (role, ))
+    return cur.fetchall()
+
+def get_roles(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("select * from Roles where role != 'Администратор'")
+    return cur.fetchall()
+
+
+def add_user(conn: psycopg2.extensions.connection, data: tuple) -> None: # внести нового пользователя в бд
+    cur = conn.cursor()
+    cur.execute(
+        "insert into users(firstname, surname, email, user_password, role_id) values (%s, %s, %s, %s, %s)",
+        data,
+    )
+    conn.commit()
