@@ -14,11 +14,11 @@ surname varchar(50) not null,
 email varchar(50) not null unique,
 user_password varchar(256) not null,
 role_id int,
-foreign key(role_id) references Roles (role_id)
+foreign key(role_id) references Roles (id)
 );
 
 
-insert into Users (id, firstname, surname, email, user_password, role_id) values
-(1, 'root', 'admin', 'root@gmail.com',
+insert into Users (firstname, surname, email, user_password, role_id) values
+('root', 'admin', 'root@gmail.com',
 '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1);
 -- пароль - админ

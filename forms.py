@@ -7,7 +7,6 @@ from our_requests import *
 class AutorisationForm(FlaskForm):
     email = EmailField("Введите Вашу почту", validators=[DataRequired()])
     password = PasswordField("Введите Ваш пароль", validators=[DataRequired()])
-    remember_me = BooleanField("Запомнить меня")
     submit = SubmitField("Войти")
 
 
