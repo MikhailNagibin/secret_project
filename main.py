@@ -95,6 +95,23 @@ def inventory_add():
     return render_template('inventory_templates/inventory_add.html', user_role=user_role, form=form, active_page='inventory_add')
 
 
+@app.route('/inventory_see/<int:item_id>', methods=['GET', 'POST'])
+def inventory_edit(item_id):
+    inventory_item = ("Старый предмет", 3, "new")
+    form = EditInventoryForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        info = [item_id, form.name.data, form.quantity.data, form.status.data]
+        return f"{info}"
+
+
+    if request.method == 'GET':
+        form.name.data = inventory_item[0]
+        form.quantity.data = inventory_item[1]
+        form.status.data = inventory_item[2]
+
+    return render_template('inventory_templates/inventory_edit.html', form=form)
+
 
 if __name__ == "__main__":
     conn = get_db_connection()

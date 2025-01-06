@@ -32,3 +32,9 @@ class InventoryaddForm(FlaskForm):
     quantity = IntegerField("Количество", validators=[DataRequired(), NumberRange(min=1, message="Количество должно быть неотрицательным")])
     status = SelectField("Состояние", choices=[("new", "Новый"), ("used", "Используемый"), ("broken", "Сломанный")])
     submit = SubmitField("Добавить")
+
+
+class EditInventoryForm(FlaskForm):
+    name = StringField('Название', validators=[DataRequired()])
+    quantity = IntegerField('Количество', validators=[DataRequired()])
+    status = SelectField('Состояние', choices=[('new', 'Новый'), ('used', 'Используемый'), ('broken', 'Сломанный')])

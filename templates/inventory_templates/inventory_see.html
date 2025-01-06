@@ -19,7 +19,9 @@
             <td>{{ item.status }}</td>
             <td>
                 {% if user_role == 'admin' %}
-                    <button class="btn btn-warning btn-sm">Редактировать</button>
+                    <form action="/inventory_see/{{ loop.index }}" method="GET">
+                        <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
+                    </form>
                 {% endif %}
             </td>
         </tr>
