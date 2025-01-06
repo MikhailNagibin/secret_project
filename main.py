@@ -15,7 +15,7 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def load_user(user_id: int): # вход в аккаунт
+def load_user(user_id: int):
     user = get_user_by_id(cur, user_id)
     if user:
         return User(*user[0])
@@ -24,39 +24,39 @@ def load_user(user_id: int): # вход в аккаунт
 
 @app.route("/logout")
 @login_required
-def logout(): # выход из акаунта
+def logout():
     logout_user()
     return redirect("/")
 
 
 @app.route('/', methods=['GET', 'POST'])
-def autorisation(): # авторизация
-    if current_user.is_authenticated: # авторизирован ли пользователь
-        return redirect('/read')
+def autorisation():
+    if current_user.is_authenticated:
+        return redirect('/inventory')
     form = AutorisationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data.lower())
-        if us and us[0][4] == generate_password(form.password.data): # если пользователь с указанными почтой и паролем существуют, войти в аккаунт
+        if us and us[0][4] == generate_password(form.password.data):
             user = User(*us[0])
             login_user(user, remember=True)
-            return redirect('read')
-        return render_template( # иначе вывести ошибкук
+            return redirect('/inventory')
+        return render_template(
             "login.html",
             title="Авторизация",
             form=form,
             message="Неправильный логин или пароль",
         )
-    return render_template("login.html", title="Авторизация", form=form, message="")
+    return render_template("auth_templates/login.html", title="Авторизация", form=form, message="")
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def registration(): # регистрация
+def registration():
     if current_user.is_authenticated:
-        return redirect('/read')
+        return redirect('/inventory')
     form = RegistrationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data)
-        if us: # вывести ошибку, если введеная почта уже закреплена за каким-либо аккаунтом (проверка на совпадение паролей написана в форме страницы)
+        if us:
             return render_template(
                 "register.html",
                 title="Регистрация",
@@ -74,18 +74,23 @@ def registration(): # регистрация
         us = get_user_by_email(cur, form.email.data)
         user = User(*us[0])
         login_user(user)
-        return redirect('/read')
-    return render_template("register.html", title="Регистрация", form=form)
+        return redirect('/inventory')
+    return render_template("auth_templates/register.html", title="Регистрация", form=form)
 
 
-@app.route('/read')
-def read():
-    if not current_user.is_authenticated:
-        return redirect('/')
-    return render_template('prosmotr.html', inventory=get_all_inventory_without_condition(cur))
+@app.route('/inventory')
+def inventory():
+    user_role = "admin"
+    inventory_items = [
+        {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
+        {"name": "Ракетка", "quantity": 5, "status": "Используется"},
+    ]
+    return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory')
+
+
 
 
 if __name__ == "__main__":
     conn = get_db_connection()
     cur = conn.cursor()
-    app.run(port=8000, host="127.0.0.1")
+    app.run(port=8000, host="127.0.0.1", debug=True)
