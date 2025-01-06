@@ -88,15 +88,11 @@ def inventory_see():
     return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory_see')
 
 
-@app.route('/inventory_add')
+@app.route('/inventory_add', methods=['GET', 'POST'])
 def inventory_add():
     user_role = "admin"
     form = InventoryaddForm()
-    inventory_items = [
-        {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
-        {"name": "Ракетка", "quantity": 5, "status": "Используется"},
-    ]
-    return render_template('inventory_templates/inventory_add.html', user_role=user_role, form=form, inventory_items=inventory_items, active_page='inventory_add')
+    return render_template('inventory_templates/inventory_add.html', user_role=user_role, form=form, active_page='inventory_add')
 
 
 
