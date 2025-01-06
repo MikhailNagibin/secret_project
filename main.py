@@ -87,7 +87,7 @@ def inventory_see():
 
 @app.route('/inventory_add', methods=['GET', 'POST'])
 def inventory_add():
-    user_role = get_role_by_id(cur, current_user.id)[0][0]
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != 'Администратор':
         return redirect('/inventory_see')
     form = InventoryaddForm()

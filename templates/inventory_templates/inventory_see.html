@@ -21,10 +21,9 @@
             <td>{{ item[2] }}</td>
             {% if user_role == 'Администратор' %}
             <td>
-
-                    <form action="/inventory_see/{{ loop.index }}" method="GET">
-                        <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
-                    </form>
+                <form action="/inventory_see/{{ loop.index }}" method="GET">
+                    <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
+                </form>
             </td>
              {% endif %}
         </tr>
