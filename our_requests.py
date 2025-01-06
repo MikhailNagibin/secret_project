@@ -31,8 +31,8 @@ def get_user_by_email(cur: psycopg2.extensions.cursor, email: str) -> list[tuple
     return cur.fetchall()
 
 
-def get_role_by_id(cur: psycopg2.extensions.cursor, role: str) -> list[tuple]:
-    cur.execute('select id from Roles where role = %s', (role, ))
+def get_role_by_id(cur: psycopg2.extensions.cursor, id: str) -> list[tuple]:
+    cur.execute('select role from Roles where id = %s', (id, ))
     return cur.fetchall()
 
 
