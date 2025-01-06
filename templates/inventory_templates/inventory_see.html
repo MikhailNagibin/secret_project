@@ -14,9 +14,9 @@
     <tbody>
         {% for item in inventory_items %}
         <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.status }}</td>
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
             <td>
                 {% if user_role == 'admin' %}
                     <form action="/inventory_see/{{ loop.index }}" method="GET">

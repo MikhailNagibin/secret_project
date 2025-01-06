@@ -18,8 +18,8 @@ foreign key(role_id) references Roles (id)
 );
 
 
-insert into Users (firstname, surname, email, user_password, role_id) values
-('root', 'admin', 'root@gmail.com',
+insert into Users (id, firstname, surname, email, user_password, role_id) values
+(0, 'root', 'admin', 'root@gmail.com',
 '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1),
 -- пароль - admin
 (-1, 'Null', 'Null', 'Null', 'Null', 1);
