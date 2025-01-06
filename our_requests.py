@@ -67,4 +67,13 @@ def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
     return cur.fetchall()
 
 def get_free_nventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute('select name, count(*) from invetory where user_id >= 0 group by name')
+    cur.execute('select name, count(*) from invetory where user_id = -1 group by name')
+    return cur.execute()
+
+
+def get_free_inventory_for_read(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("""select i.name, count(*), c.condition from inventory as i inner join conditions as c on i.condition_id = c.id
+                   where i.user_id = -1
+                   group by i.name, c.condition, i.condition_id
+                   order by i.condition_id, i.name""")
+    return cur.fetchall()
