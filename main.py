@@ -81,10 +81,7 @@ def registration():
 @app.route('/inventory_see')
 def inventory_see():
     user_role = "admin"
-    inventory_items = [
-        {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
-        {"name": "Ракетка", "quantity": 5, "status": "Используется"},
-    ]
+    inventory_items = get_free_inventory_for_read(cur)
     return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory_see')
 
 
@@ -97,19 +94,12 @@ def inventory_add():
 
 @app.route('/inventory_see/<int:item_id>', methods=['GET', 'POST'])
 def inventory_edit(item_id):
-    inventory_item = ("Старый предмет", 3, "new")
+    inventory_item = get_free_inventory_for_read(cur)[item_id - 1]
     form = EditInventoryForm()
-
-    if request.method == 'POST' and form.validate_on_submit():
-        info = [item_id, form.name.data, form.quantity.data, form.status.data]
-        return f"{info}"
-
-
-    if request.method == 'GET':
-        form.name.data = inventory_item[0]
-        form.quantity.data = inventory_item[1]
-        form.status.data = inventory_item[2]
-
+    form.name.data = inventory_item[0]
+    form.quantity.data = inventory_item[1]
+    form.status.data = 2
+    data = get_conditions(cur)
     return render_template('inventory_templates/inventory_edit.html', form=form)
 
 
