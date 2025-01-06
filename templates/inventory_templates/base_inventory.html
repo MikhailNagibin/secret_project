@@ -31,7 +31,10 @@
             color: #fff;
         }
         .sidebar a:hover {
-            background-color: #e9ecef;
+            background-color: #ec8d00;
+        }
+        .sidebar a:not(.active):hover {
+            background-color: #dee2e6;
         }
         .content {
             flex-grow: 1;
@@ -50,6 +53,7 @@
             background-color: #b30000 !important;
             border-color: #990000 !important;
         }
+
     </style>
 </head>
 <body>
@@ -63,10 +67,12 @@
             <a href="/logout" class="btn btn-danger btn-sm" style="color: #ffffff;padding: 5px 7px">Выход</a>
         </div>
         {% if user_role == 'admin' %}
-            <a href="/admin/inventory" class="{% if active_page == 'inventory' %}active{% endif %}">Добавление/Редактирование инвентаря</a>
+            <a href="/inventory_see" class="{% if active_page == 'inventory_see' %}active{% endif %}">Просмотр и редактирование</a>
+            <a href="/inventory_add" class="{% if active_page == 'inventory_add' %}active{% endif %}">Добавление</a>
             <a href="/admin/assign" class="{% if active_page == 'assign' %}active{% endif %}">Закрепление за пользователями</a>
             <a href="/admin/purchases" class="{% if active_page == 'purchases' %}active{% endif %}">План закупок</a>
             <a href="/admin/reports" class="{% if active_page == 'reports' %}active{% endif %}">Отчеты</a>
+            <a href="/admin/reports" class="{% if active_page == 'request' %}active{% endif %}">Заявки</a>
         {% else %}
             <a href="/user/inventory" class="{% if active_page == 'inventory' %}active{% endif %}">Просмотр инвентаря</a>
             <a href="/user/requests" class="{% if active_page == 'requests' %}active{% endif %}">Запросы на инвентарь</a>
