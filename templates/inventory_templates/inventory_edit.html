@@ -16,6 +16,7 @@
                 </div>
             {% endif %}
         </div>
+
         <div class="mb-3">
             {{ form.quantity.label(class="form-label") }}
             {{ form.quantity(class="form-control") }}
@@ -27,17 +28,17 @@
                 </div>
             {% endif %}
         </div>
+
         <div class="mb-3">
             {{ form.status.label(class="form-label") }}
             {{ form.status(class="form-select") }}
         </div>
-        <button type="submit" class="btn btn-warning">Сохранить</button>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Удалить</button>
-        <a href="{{ url_for('inventory_see') }}" class="btn btn-secondary">Назад</a>
+
+        <div class="d-flex gap-2">
+            {{ form.save(class="btn btn-warning") }}
+            {{ form.delete(class="btn btn-danger") }}
+            <a href="{{ url_for('inventory_see') }}" class="btn btn-secondary">Назад</a>
+        </div>
     </form>
-
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
 {% endblock %}

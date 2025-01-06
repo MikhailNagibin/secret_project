@@ -41,7 +41,7 @@ def autorisation():
             login_user(user, remember=True)
             return redirect('/inventory_see')
         return render_template(
-            "login.html",
+            "auth_templates/login.html",
             title="Авторизация",
             form=form,
             message="Неправильный логин или пароль",
@@ -58,7 +58,7 @@ def registration():
         us = get_user_by_email(cur, form.email.data)
         if us:
             return render_template(
-                "register.html",
+                "auth_templates/register.html",
                 title="Регистрация",
                 form=form,
                 message="Такой пользователь уже есть",
@@ -100,8 +100,23 @@ def inventory_edit(item_id):
     form.quantity.data = inventory_item[1]
     form.status.data = 2
     data = get_conditions(cur)
-    return render_template('inventory_templates/inventory_edit.html', form=form)
 
+    if request.method == 'GET':
+        form.name.data = inventory_item[0]
+        form.quantity.data = inventory_item[1]
+        form.status.data = inventory_item[2]
+
+    if request.method == 'POST':
+        if 'save' in request.form:
+            # сохранить
+            pass
+        elif 'delete' in request.form:
+            # удалить
+            pass
+        elif 'back' in request.form:
+            return redirect(url_for('inventory_see'))
+
+    return render_template('inventory_templates/inventory_edit.html', form=form)
 
 if __name__ == "__main__":
     conn = get_db_connection()
