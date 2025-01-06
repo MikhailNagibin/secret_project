@@ -32,27 +32,27 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 def autorisation():
     if current_user.is_authenticated:
-        return redirect('/read')
+        return redirect('/inventory')
     form = AutorisationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data.lower())
         if us and us[0][4] == generate_password(form.password.data):
             user = User(*us[0])
             login_user(user, remember=True)
-            return redirect('read')
+            return redirect('/inventory')
         return render_template(
             "login.html",
             title="Авторизация",
             form=form,
             message="Неправильный логин или пароль",
         )
-    return render_template("login.html", title="Авторизация", form=form, message="")
+    return render_template("auth_templates/login.html", title="Авторизация", form=form, message="")
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
     if current_user.is_authenticated:
-        return redirect('/read')
+        return redirect('/inventory')
     form = RegistrationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data)
@@ -74,18 +74,23 @@ def registration():
         us = get_user_by_email(cur, form.email.data)
         user = User(*us[0])
         login_user(user)
-        return redirect('/read')
-    return render_template("register.html", title="Регистрация", form=form)
+        return redirect('/inventory')
+    return render_template("auth_templates/register.html", title="Регистрация", form=form)
 
 
-@app.route('/read')
-def read():
-    if not current_user.is_authenticated:
-        return redirect('/')
-    return  '<a class="navbar-brand" href="/logout">{{ current_user.firstname }}</a>'
+@app.route('/inventory')
+def inventory():
+    user_role = "admin"
+    inventory_items = [
+        {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
+        {"name": "Ракетка", "quantity": 5, "status": "Используется"},
+    ]
+    return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory')
+
+
 
 
 if __name__ == "__main__":
     conn = get_db_connection()
     cur = conn.cursor()
-    app.run(port=8000, host="127.0.0.1")
+    app.run(port=8000, host="127.0.0.1", debug=True)
