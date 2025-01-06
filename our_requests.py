@@ -78,6 +78,18 @@ def get_free_inventory_for_read(cur: psycopg2.extensions.cursor) -> list[tuple]:
                    order by i.condition_id, i.name""")
     return cur.fetchall()
 
+
 def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
     cur.execute('select * from conditions')
     return cur.fetchall()
+
+
+def get_condition_id_by_condition(cur: psycopg2.extensions.cursor, condition: str) -> list[tuple]:
+    cur.execute('select id from conditions where condition = %s', (condition, ))
+    return cur.fetchall()
+
+
+def delete_inventory_by_name_and_condition_id(conn: psycopg2.extensions.connection, name: str, condition_id) -> None:
+    cur = conn.cursor()
+    cur.execute('Delete from inventory where name = %s and condition_id = %s', (name, condition_id))
+    conn.commit()
