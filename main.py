@@ -80,14 +80,16 @@ def registration():
 
 @app.route('/inventory_see')
 def inventory_see():
-    user_role = "user"
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
     inventory_items = get_free_inventory_for_read(cur)
     return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory_see')
 
 
 @app.route('/inventory_add', methods=['GET', 'POST'])
 def inventory_add():
-    user_role = "user"
+    user_role = get_role_by_id(cur, current_user.id)[0][0]
+    if user_role != 'Администратор':
+        return redirect('/inventory_see')
     form = InventoryaddForm()
     return render_template('inventory_templates/inventory_add.html', user_role=user_role, form=form, active_page='inventory_add')
 
