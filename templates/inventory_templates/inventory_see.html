@@ -8,7 +8,9 @@
             <th>Название</th>
             <th>Количество</th>
             <th>Состояние</th>
-            <th>Действия</th>
+            {% if user_role == 'Администратор' %}
+                <th>Действия</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -18,7 +20,7 @@
             <td>{{ item[1] }}</td>
             <td>{{ item[2] }}</td>
             <td>
-                {% if user_role == 'admin' %}
+                {% if user_role == 'Администратор' %}
                     <form action="/inventory_see/{{ loop.index }}" method="GET">
                         <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
                     </form>
