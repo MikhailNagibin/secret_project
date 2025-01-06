@@ -74,8 +74,8 @@
             <a href="/admin/reports" class="{% if active_page == 'reports' %}active{% endif %}">Отчеты</a>
             <a href="/admin/reports" class="{% if active_page == 'request' %}active{% endif %}">Заявки</a>
         {% elif user_role == 'Пользователь' %}
-            <a href="/user/inventory" class="{% if active_page == 'inventory' %}active{% endif %}">Просмотр инвентаря</a>
-            <a href="/user/requests" class="{% if active_page == 'requests' %}active{% endif %}">Запросы на инвентарь</a>
+            <a href="inventory_see" class="{% if active_page == 'inventory_see' %}active{% endif %}">Просмотр инвентаря</a>
+            <a href="inventory_user_request" class="{% if active_page == 'inventory_user_request' %}active{% endif %}">Запросы на инвентарь</a>
         {% endif %}
     </div>
 </body>
