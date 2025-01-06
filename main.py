@@ -32,14 +32,14 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 def autorisation():
     if current_user.is_authenticated:
-        return redirect('/inventory')
+        return redirect('/inventory_see')
     form = AutorisationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data.lower())
         if us and us[0][4] == generate_password(form.password.data):
             user = User(*us[0])
             login_user(user, remember=True)
-            return redirect('/inventory')
+            return redirect('/inventory_see')
         return render_template(
             "login.html",
             title="Авторизация",
@@ -52,7 +52,7 @@ def autorisation():
 @app.route('/register', methods=['GET', 'POST'])
 def registration():
     if current_user.is_authenticated:
-        return redirect('/inventory')
+        return redirect('/inventory_see')
     form = RegistrationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data)
@@ -74,12 +74,12 @@ def registration():
         us = get_user_by_email(cur, form.email.data)
         user = User(*us[0])
         login_user(user)
-        return redirect('/inventory')
+        return redirect('/inventory_see')
     return render_template("auth_templates/register.html", title="Регистрация", form=form)
 
 
-@app.route('/inventory')
-def inventory():
+@app.route('/inventory_see')
+def inventory_see():
     user_role = "admin"
     inventory_items = [
         {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
@@ -87,6 +87,15 @@ def inventory():
     ]
     return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory')
 
+
+@app.route('/inventory_add')
+def inventory_add():
+    user_role = "admin"
+    inventory_items = [
+        {"name": "Мяч", "quantity": 10, "status": "Хорошее"},
+        {"name": "Ракетка", "quantity": 5, "status": "Используется"},
+    ]
+    return render_template('inventory_templates/inventory_see.html', user_role=user_role, inventory_items=inventory_items, active_page='inventory')
 
 
 
