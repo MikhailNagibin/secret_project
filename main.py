@@ -97,16 +97,11 @@ def inventory_add():
 @app.route('/inventory_see/<int:item_id>', methods=['GET', 'POST'])
 def inventory_edit(item_id):
     inventory_item = get_free_inventory_for_read(cur)[item_id - 1]
+
     form = EditInventoryForm()
     form.name.data = inventory_item[0]
     form.quantity.data = inventory_item[1]
-    form.status.data = 2
-    data = get_conditions(cur)
-
-    if request.method == 'GET':
-        form.name.data = inventory_item[0]
-        form.quantity.data = inventory_item[1]
-        form.status.data = inventory_item[2]
+    form.status.data = get_condition_id_by_condition(cur, inventory_item[2])[0][0]
 
     if request.method == 'POST':
         if 'save' in request.form:
@@ -115,8 +110,7 @@ def inventory_edit(item_id):
         elif 'delete' in request.form:
             # удалить
             pass
-        elif 'back' in request.form:
-            return redirect(url_for('inventory_see'))
+        return redirect(url_for('inventory_see'))
 
     return render_template('inventory_templates/inventory_edit.html', form=form)
 

@@ -38,9 +38,10 @@ class InventoryaddForm(FlaskForm):
 class EditInventoryForm(FlaskForm):
     conn = get_db_connection()
     cur = conn.cursor()
+    data = get_conditions(cur)
     name = StringField('Название', validators=[DataRequired()])
     quantity = IntegerField('Количество', validators=[DataRequired()])
-    status = SelectField('Состояние', choices=get_conditions(cur))
+    status = SelectField('Состояние', choices=get_conditions(cur), coerce=int, default=data[0])
     save = SubmitField('Сохранить', render_kw={"class": "btn btn-warning"})
     delete = SubmitField('Удалить', render_kw={"class": "btn btn-danger"})
     back = SubmitField('Назад', render_kw={"class": "btn btn-secondary"})
