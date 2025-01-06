@@ -15,7 +15,7 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def load_user(user_id: int):
+def load_user(user_id: int): # вход в аккаунт
     user = get_user_by_id(cur, user_id)
     if user:
         return User(*user[0])
@@ -24,23 +24,23 @@ def load_user(user_id: int):
 
 @app.route("/logout")
 @login_required
-def logout():
+def logout(): # выход из акаунта
     logout_user()
     return redirect("/")
 
 
 @app.route('/', methods=['GET', 'POST'])
-def autorisation():
-    if current_user.is_authenticated:
+def autorisation(): # авторизация
+    if current_user.is_authenticated: # авторизирован ли пользователь
         return redirect('/read')
     form = AutorisationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data.lower())
-        if us and us[0][4] == generate_password(form.password.data):
+        if us and us[0][4] == generate_password(form.password.data): # если пользователь с указанными почтой и паролем существуют, войти в аккаунт
             user = User(*us[0])
             login_user(user, remember=True)
             return redirect('read')
-        return render_template(
+        return render_template( # иначе вывести ошибкук
             "login.html",
             title="Авторизация",
             form=form,
@@ -50,13 +50,13 @@ def autorisation():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def registration():
+def registration(): # регистрация
     if current_user.is_authenticated:
         return redirect('/read')
     form = RegistrationForm()
     if form.validate_on_submit():
         us = get_user_by_email(cur, form.email.data)
-        if us:
+        if us: # вывести ошибку, если введеная почта уже закреплена за каким-либо аккаунтом (проверка на совпадение паролей написана в форме страницы)
             return render_template(
                 "register.html",
                 title="Регистрация",
@@ -82,7 +82,7 @@ def registration():
 def read():
     if not current_user.is_authenticated:
         return redirect('/')
-    return  '<a class="navbar-brand" href="/logout">{{ current_user.firstname }}</a>'
+    return render_template('prosmotr.html', inventory=get_all_inventory_without_condition(cur))
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ def get_db_connection() -> psycopg2.extensions.connection:
     return conn
 
 
-def generate_password(password): # получить хеш пароля
+def generate_password(password: str) -> str: # получить хеш пароля
     return sha256(password.encode()).hexdigest()
 
 
@@ -49,3 +49,22 @@ def add_user(conn: psycopg2.extensions.connection, data: tuple) -> None: # вн�
         data,
     )
     conn.commit()
+
+
+def add_inventory(conn: psycopg2.extensions.connection, data: tuple) -> None:
+    cur = conn.cursor()
+    cur.execute("insert into inventory(name, condition_id) values (%s, %s)", data)
+    conn.commit()
+
+
+def get_all_inventory_without_condition(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select name, count(*) from inventory group by name')
+    return cur.fetchall()
+
+
+def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select * from conditions')
+    return cur.fetchall()
+
+def get_free_nventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select name, count(*) from invetory where user_id >= 0 group by name')
