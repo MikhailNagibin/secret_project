@@ -100,6 +100,10 @@ def inventory_add():
     if user_role != "Администратор":
         return redirect("/inventory_see")
     form = InventoryaddForm()
+    if request.method == "POST":
+        conditions_id = get_condition_id_by_condition(cur, 'Новый')
+        for _ in range(form.quantity.data):
+            add_inventory(conn, form.name.data, conditions_id)
     return render_template(
         "inventory_templates/inventory_add.html",
         user_role=user_role,
@@ -143,7 +147,6 @@ def create_report():
         sender_name = form.sender_name.data
         report_date = form.report_date.data
         report_content = form.report_content.data
-
         return f'{sender_name, report_content, report_date}'
 
     return render_template('inventory_templates/admin_reports.html', form=form,
