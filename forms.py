@@ -45,7 +45,8 @@ class EditInventoryForm(FlaskForm):
     cur = conn.cursor()
     data = get_conditions(cur)
     name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired()])
+    quantity = IntegerField("Количество", validators=[DataRequired(),
+                NumberRange(min=1, message="Количество не должно быть неотрицательной")])
     status = SelectField(
         "Состояние", choices=data, coerce=int, default=data[0]
     )
@@ -78,6 +79,7 @@ class PurchasePlanForm(FlaskForm):
         Length(max=150, message="Название поставщика не должно превышать 150 символов.")
     ])
     price = DecimalField('Планируемая цена', places=2, validators=[
-        DataRequired(message="Введите цену.")
+        DataRequired(message="Введите цену."),
+        NumberRange(min=1, message="Цена не должна быть неотрицательной"),
     ])
     submit = SubmitField('Добавить в план закупок')
