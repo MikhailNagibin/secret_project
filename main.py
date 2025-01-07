@@ -101,9 +101,10 @@ def inventory_add():
         return redirect("/inventory_see")
     form = InventoryaddForm()
     if request.method == "POST":
-        conditions_id = get_condition_id_by_condition(cur, 'Новый')
+        conditions_id = get_condition_id_by_condition(cur, 'Новый')[0][0]
         for _ in range(form.quantity.data):
             add_inventory(conn, form.name.data, conditions_id)
+        return redirect('/inventory_see')
     return render_template(
         "inventory_templates/inventory_add.html",
         user_role=user_role,
