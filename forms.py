@@ -52,3 +52,18 @@ class EditInventoryForm(FlaskForm):
     save = SubmitField("Сохранить", render_kw={"class": "btn btn-warning"})
     delete = SubmitField("Удалить", render_kw={"class": "btn btn-danger"})
     back = SubmitField("Назад", render_kw={"class": "btn btn-secondary"})
+
+
+class ReportForm(FlaskForm):
+    sender_name = StringField('Имя отправляющего', validators=[
+        DataRequired(message="Поле обязательно для заполнения."),
+        Length(max=100, message="Имя должно быть не длиннее 100 символов.")
+    ])
+    report_date = DateField('Дата отчета', validators=[
+        DataRequired(message="Укажите дату.")
+    ])
+    report_content = TextAreaField('Содержание отчета', validators=[
+        DataRequired(message="Введите текст отчета."),
+        Length(max=1000, message="Отчет не должен превышать 1000 символов.")
+    ])
+    submit = SubmitField('Создать отчет')
