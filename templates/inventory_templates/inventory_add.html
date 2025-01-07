@@ -1,0 +1,18 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+<h3>Добавление инвентаря</h3>
+<form method="post" class="mb-4">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.name.label }}
+        {{ form.name(class="form-control", placeholder="Введите название инвентаря") }}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity.label }}
+        {{ form.quantity(class="form-control", placeholder="Введите количество") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+{% endblock %}

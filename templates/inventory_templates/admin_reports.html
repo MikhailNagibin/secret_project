@@ -1,0 +1,21 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+<h3>Создание отчета</h3>
+<form method="post" class="mb-4">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.sender_name.label }}
+        {{ form.sender_name(class="form-control", placeholder="Введите имя отправляющего") }}
+    </div>
+    <div class="mb-3">
+        {{ form.report_date.label }}
+        {{ form.report_date(class="form-control", type="date") }}
+    </div>
+    <div class="mb-3">
+        {{ form.report_content.label }}
+        {{ form.report_content(class="form-control", rows=5, placeholder="Введите текст отчета") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

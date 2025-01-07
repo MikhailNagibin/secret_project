@@ -13,7 +13,7 @@ app.config["SECRET_KEY"] = "secret_key"
 def autorisation():
     form = AutorisationForm()
     if form.validate_on_submit():
-        return redirect('/inventory')
+        return redirect("/inventory")
     return render_template("login.html", title="Авторизация", form=form, message="")
 
 
