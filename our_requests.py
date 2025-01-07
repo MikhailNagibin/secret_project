@@ -126,3 +126,10 @@ def add_inventory(conn: psycopg2.extensions.connection, name: str, condition_id)
         (name, condition_id),
     )
     conn.commit()
+
+
+def create_plane(conn: psycopg2.extensions.connection, data: tuple):
+    cur = conn.cursor()
+    cur.execute("""insert into purchase_plan(name, count, price, supplier) 
+                values(%s, %s, %s, %s)""", data)
+    conn.commit()

@@ -134,7 +134,7 @@ def inventory_edit(item_id):
             print(form.name.data, form.status.data)
         elif "delete" in request.form:
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
-        return redirect(url_for("inventory_see"))
+        return redirect(url_for("/inventory_see"))
 
     return render_template("inventory_templates/inventory_edit.html", form=form,
         user_role=user_role)
@@ -160,12 +160,8 @@ def add_to_purchase_plan():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     form = PurchasePlanForm()
     if form.validate_on_submit():
-        item_name = form.item_name.data
-        supplier = form.supplier.data
-        price = form.price.data
-
-        return f"План для закупки '{item_name}' у '{supplier}' за {price} добавлен!"
-
+        create_plane(conn, (form.item_name.data, form.quantity.data, form.price.data, form.supplier.data))
+        return redirect('/inventory_see')
     return render_template('inventory_templates/purchases.html', form=form,
         user_role=user_role,
         active_page="purchases")

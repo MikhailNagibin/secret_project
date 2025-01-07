@@ -45,3 +45,12 @@ condition_id int,
 foreign key(user_id) references Users (id),
 foreign key(condition_id) references Conditions (id)
 );
+
+
+create table purchase_plan (
+id serial primary key unique,
+name varchar(50),
+count int,
+price int,
+supplier varchar(50)
+);
