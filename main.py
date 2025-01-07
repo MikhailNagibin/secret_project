@@ -131,7 +131,6 @@ def inventory_edit(item_id):
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
             for _ in range(form.quantity.data):
                 add_inventory(conn, form.name.data, form.status.data)
-            print(form.name.data, form.status.data)
         elif "delete" in request.form:
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
         return redirect(url_for("inventory_see"))
