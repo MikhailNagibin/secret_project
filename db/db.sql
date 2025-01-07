@@ -54,3 +54,10 @@ count int,
 price int,
 supplier varchar(50)
 );
+
+
+create table reports (
+id serial primary key unique,
+name varchar(50),
+report text
+);

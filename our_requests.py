@@ -133,3 +133,9 @@ def create_plane(conn: psycopg2.extensions.connection, data: tuple):
     cur.execute("""insert into purchase_plan(name, count, price, supplier) 
                 values(%s, %s, %s, %s)""", data)
     conn.commit()
+
+
+def create_report(conn: psycopg2.extensions.connection, name: str, report: str) -> None:
+    cur = conn.cursor()
+    cur.execute("""insert into reports(name, report) values(%s, %s)""", (name, report))
+    conn.commit()

@@ -59,9 +59,6 @@ class ReportForm(FlaskForm):
         DataRequired(message="Поле обязательно для заполнения."),
         Length(max=100, message="Имя должно быть не длиннее 100 символов.")
     ])
-    report_date = DateField('Дата отчета', validators=[
-        DataRequired(message="Укажите дату.")
-    ])
     report_content = TextAreaField('Содержание отчета', validators=[
         DataRequired(message="Введите текст отчета."),
         Length(max=1000, message="Отчет не должен превышать 1000 символов.")

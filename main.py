@@ -140,15 +140,12 @@ def inventory_edit(item_id):
 
 
 @app.route('/create-report', methods=['GET', 'POST'])
-def create_report():
+def make_report():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     form = ReportForm()
     if form.validate_on_submit():
-        sender_name = form.sender_name.data
-        report_date = form.report_date.data
-        report_content = form.report_content.data
-        return f'{sender_name, report_content, report_date}'
-
+        create_report(conn, form.sender_name.data, form.report_content.data)
+        return redirect('/inventory_see')
     return render_template('inventory_templates/admin_reports.html', form=form,
         user_role=user_role,
         active_page="create-report")
