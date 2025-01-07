@@ -116,18 +116,19 @@ def inventory_edit(item_id):
     inventory_item = get_free_inventory_for_read(cur)[item_id - 1]
     condition_id = get_condition_id_by_condition(cur, inventory_item[2])[0][0]
     form = EditInventoryForm()
-    form.name.data = inventory_item[0]
-    form.quantity.data = inventory_item[1]
-    form.status.data = condition_id
+    if request.method == "GET":
+        form.name.data = inventory_item[0]
+        form.quantity.data = inventory_item[1]
+        form.status.data = condition_id
 
     if request.method == "POST":
         if "save" in request.form:
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
-
-            pass
+            for _ in range(form.quantity.data):
+                add_inventory(conn, form.name.data, form.status.data)
+            print(form.name.data, form.status.data)
         elif "delete" in request.form:
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
-            pass
         return redirect(url_for("inventory_see"))
 
     return render_template("inventory_templates/inventory_edit.html", form=form)
