@@ -71,7 +71,7 @@
             <a href="/inventory_add" class="{% if active_page == 'inventory_add' %}active{% endif %}">Добавление</a>
             <a href="/admin/assign" class="{% if active_page == 'assign' %}active{% endif %}">Закрепление за пользователями</a>
             <a href="/admin/purchases" class="{% if active_page == 'purchases' %}active{% endif %}">План закупок</a>
-            <a href="/admin/reports" class="{% if active_page == 'reports' %}active{% endif %}">Отчеты</a>
+            <a href="/create-report" class="{% if active_page == 'create-report' %}active{% endif %}">Отчеты</a>
             <a href="/admin/reports" class="{% if active_page == 'request' %}active{% endif %}">Заявки</a>
         {% elif user_role == 'Пользователь' %}
             <a href="inventory_see" class="{% if active_page == 'inventory_see' %}active{% endif %}">Просмотр инвентаря</a>
