@@ -45,8 +45,7 @@ class EditInventoryForm(FlaskForm):
     cur = conn.cursor()
     data = get_conditions(cur)
     name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired(),
-                NumberRange(min=1, message="Количество не должно быть неотрицательной")])
+    quantity = IntegerField("Количество", validators=[DataRequired()])
     status = SelectField(
         "Состояние", choices=data, coerce=int, default=data[0]
     )
@@ -69,6 +68,7 @@ class ReportForm(FlaskForm):
     ])
     submit = SubmitField('Создать отчет')
 
+
 class PurchasePlanForm(FlaskForm):
     item_name = StringField('Название инвентаря', validators=[
         DataRequired(message="Поле обязательно для заполнения."),
@@ -78,8 +78,12 @@ class PurchasePlanForm(FlaskForm):
         DataRequired(message="Укажите поставщика."),
         Length(max=150, message="Название поставщика не должно превышать 150 символов.")
     ])
-    price = DecimalField('Планируемая цена', places=2, validators=[
+    price = DecimalField('Планируемая цена за всю закупку', places=2, validators=[
         DataRequired(message="Введите цену."),
-        NumberRange(min=1, message="Цена не должна быть неотрицательной"),
+        NumberRange(min=1, message="Цена не может быть меньше 1.")
+    ])
+    quantity = IntegerField('Количество предметов', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
     ])
     submit = SubmitField('Добавить в план закупок')
