@@ -134,7 +134,7 @@ def inventory_edit(item_id):
             print(form.name.data, form.status.data)
         elif "delete" in request.form:
             delete_inventory_by_name_and_condition_id(conn, inventory_item[0], condition_id)
-        return redirect(url_for("/inventory_see"))
+        return redirect(url_for("inventory_see"))
 
     return render_template("inventory_templates/inventory_edit.html", form=form,
         user_role=user_role)
