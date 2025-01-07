@@ -19,8 +19,9 @@ class RegistrationForm(FlaskForm):
         "Повторите пароль",
         validators=[
             DataRequired(),
-            EqualTo('password', message='Пароли должны совпадать.')
-        ])
+            EqualTo("password", message="Пароли должны совпадать."),
+        ],
+    )
     name = StringField("Имя пользователя", validators=[DataRequired()])
     surname = StringField("Фамилия пользователя", validators=[DataRequired()])
     role = SelectField("Введите Вашу роль", choices=get_roles(cur))
@@ -28,10 +29,14 @@ class RegistrationForm(FlaskForm):
 
 
 class InventoryaddForm(FlaskForm):
-    conn = get_db_connection()
-    cur = conn.cursor()
     name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired(), NumberRange(min=1, message="Количество должно быть неотрицательным")])
+    quantity = IntegerField(
+        "Количество",
+        validators=[
+            DataRequired(),
+            NumberRange(min=1, message="Количество должно быть неотрицательным"),
+        ],
+    )
     submit = SubmitField("Добавить")
 
 
@@ -39,9 +44,11 @@ class EditInventoryForm(FlaskForm):
     conn = get_db_connection()
     cur = conn.cursor()
     data = get_conditions(cur)
-    name = StringField('Название', validators=[DataRequired()])
-    quantity = IntegerField('Количество', validators=[DataRequired()])
-    status = SelectField('Состояние', choices=get_conditions(cur), coerce=int, default=data[0])
-    save = SubmitField('Сохранить', render_kw={"class": "btn btn-warning"})
-    delete = SubmitField('Удалить', render_kw={"class": "btn btn-danger"})
-    back = SubmitField('Назад', render_kw={"class": "btn btn-secondary"})
+    name = StringField("Название", validators=[DataRequired()])
+    quantity = IntegerField("Количество", validators=[DataRequired()])
+    status = SelectField(
+        "Состояние", choices=data, coerce=int, default=data[0]
+    )
+    save = SubmitField("Сохранить", render_kw={"class": "btn btn-warning"})
+    delete = SubmitField("Удалить", render_kw={"class": "btn btn-danger"})
+    back = SubmitField("Назад", render_kw={"class": "btn btn-secondary"})
