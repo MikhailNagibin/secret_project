@@ -67,3 +67,17 @@ class ReportForm(FlaskForm):
         Length(max=1000, message="Отчет не должен превышать 1000 символов.")
     ])
     submit = SubmitField('Создать отчет')
+
+class PurchasePlanForm(FlaskForm):
+    item_name = StringField('Название инвентаря', validators=[
+        DataRequired(message="Поле обязательно для заполнения."),
+        Length(max=200, message="Название не должно превышать 200 символов.")
+    ])
+    supplier = StringField('Название поставщика', validators=[
+        DataRequired(message="Укажите поставщика."),
+        Length(max=150, message="Название поставщика не должно превышать 150 символов.")
+    ])
+    price = DecimalField('Планируемая цена', places=2, validators=[
+        DataRequired(message="Введите цену.")
+    ])
+    submit = SubmitField('Добавить в план закупок')

@@ -1,0 +1,21 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+<h3>Добавление в план закупок</h3>
+<form method="post" class="mb-4">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.item_name.label }}
+        {{ form.item_name(class="form-control", placeholder="Введите название инвентаря") }}
+    </div>
+    <div class="mb-3">
+        {{ form.supplier.label }}
+        {{ form.supplier(class="form-control", placeholder="Введите название поставщика") }}
+    </div>
+    <div class="mb-3">
+        {{ form.price.label }}
+        {{ form.price(class="form-control", placeholder="Введите планируемую цену", type="number", step="0.01") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

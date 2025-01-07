@@ -155,6 +155,22 @@ def create_report():
         active_page="create-report")
 
 
+@app.route('/purchases', methods=['GET', 'POST'])
+def add_to_purchase_plan():
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    form = PurchasePlanForm()
+    if form.validate_on_submit():
+        item_name = form.item_name.data
+        supplier = form.supplier.data
+        price = form.price.data
+
+        return f"План для закупки '{item_name}' у '{supplier}' за {price} добавлен!"
+
+    return render_template('inventory_templates/purchases.html', form=form,
+        user_role=user_role,
+        active_page="purchases")
+
+
 if __name__ == "__main__":
     conn = get_db_connection()
     cur = conn.cursor()
