@@ -163,6 +163,6 @@ def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name:
     cur = conn.cursor()
     cur.execute("""update inventory 
                     set user_id = %s where id in (select id from inventory 
-                    where name = %s and user_id > 0 
+                    where name = %s and user_id = -1 
                     order by condition_id limit %s)""", (user_id, name, quantity))
     conn.commit()
