@@ -87,10 +87,6 @@ class PurchasePlanForm(FlaskForm):
 
 
 class AssignInventoryForm(FlaskForm):
-    user_name = StringField('Имя пользователя', validators=[
-        DataRequired(message="Введите имя пользователя."),
-        Length(max=100, message="Имя пользователя должно быть не длиннее 100 символов.")
-    ])
     user_name = SelectField('Выберите Пользователя', choices=[], validators=[
         DataRequired(message="Выберите Пользователя.")
     ])
