@@ -61,3 +61,19 @@ id serial primary key unique,
 name varchar(50),
 report text
 );
+
+
+create table request (
+id serial primary key unique,
+user_id int,
+approved bool,
+foreign key (user_id) references Users(id)
+);
+
+
+create table inventory_in_requests (
+request_id int,
+inventory_id int,
+foreign key (request_id) references request(id),
+foreign key (inventory_id) references inventory(id)
+);
