@@ -139,3 +139,16 @@ def create_report(conn: psycopg2.extensions.connection, name: str, report: str) 
     cur = conn.cursor()
     cur.execute("""insert into reports(name, report) values(%s, %s)""", (name, report))
     conn.commit()
+
+
+def get_occupied_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("""select u.firstname, u.surname, i.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+                   where u.id > 0
+                   group by u.firstname, i.name, u.surname
+                   order by u.firstname , u.surname;""")
+    return cur.fetchall()
+
+
+def get_users_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select firstname, surname from users')
+    return cur.fetchall()
