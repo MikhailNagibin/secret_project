@@ -89,7 +89,6 @@ class PurchasePlanForm(FlaskForm):
 class AssignInventoryForm(FlaskForm):
     conn = get_db_connection()
     cur = conn.cursor()
-    # print(list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur))))
     user_name = SelectField('Выберите Пользователя',
                             choices=list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))),
                             validators=[

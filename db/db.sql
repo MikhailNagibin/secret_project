@@ -63,17 +63,24 @@ report text
 );
 
 
-create table request (
+create table request_status (
 id serial primary key unique,
-user_id int,
-approved bool,
-foreign key (user_id) references Users(id)
+status varchar(50)
 );
 
+insert into request_status(status) values
+('Не рассмотрен'),
+('Адобрен'),
+('Откланен');
 
-create table inventory_in_requests (
-request_id int,
+
+create table requests (
+id serial primary key unique,
+user_id int,
 inventory_id int,
-foreign key (request_id) references request(id),
-foreign key (inventory_id) references inventory(id)
+count int,
+status_id int,
+foreign key (user_id) references Users(id),
+foreign key (inventory_id) references inventory(id),
+foreign key (status_id) references request_status(id)
 );

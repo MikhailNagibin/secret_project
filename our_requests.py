@@ -166,3 +166,12 @@ def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name:
                     where name = %s and user_id = -1 
                     order by condition_id limit %s)""", (user_id, name, quantity))
     conn.commit()
+
+
+def get_status_id_by_status(cur: psycopg2.extensions.cursor, status: str) -> list[tuple]:
+    cur.execute('select id from request_status where status = %s', (status, ))
+
+def add_request(conn: psycopg2.extensions.connection, user_id: int, inventory_id, count: int, status_id: int) -> None:
+    cur = conn.cursor()
+    cur.execute("insert into requests(user_id, inventory_id, count, status_id) values(%s, %s, %s, %s)",
+                (user_id, inventory_id, count, status_id))

@@ -143,6 +143,9 @@ def inventory_edit(item_id):
 @app.route('/create-report', methods=['GET', 'POST'])
 def make_report():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role != "Администратор":
+        return redirect("/inventory_see")
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
     form = ReportForm()
     if form.validate_on_submit():
         create_report(conn, form.sender_name.data, form.report_content.data)
@@ -154,7 +157,10 @@ def make_report():
 
 @app.route('/purchases', methods=['GET', 'POST'])
 def add_to_purchase_plan():
+    # user_role = get_role_by_id(cur, current_user.role)[0][0]
     user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role != "Администратор":
+        return redirect("/inventory_see")
     form = PurchasePlanForm()
     if form.validate_on_submit():
         create_plane(conn, (form.item_name.data, form.quantity.data, form.price.data, form.supplier.data))
@@ -166,6 +172,9 @@ def add_to_purchase_plan():
 
 @app.route('/inventory_assign', methods=['GET', 'POST'])
 def assign_inventory():
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role != "Администратор":
+        return redirect("/inventory_see")
     form = AssignInventoryForm()
     form.item.choices = list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur)))
     form.user_name.choices = list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur)))
@@ -176,13 +185,13 @@ def assign_inventory():
         item = form.item.data
         quantity = form.quantity.data
         count = get_count_of_free_inventory_by_name(cur, item)
-        print(count, quantity)
+        # print(count, quantity)
         if count and quantity > count[0][0]:
-            flash(f"Ошибка: Запрашиваемое количество {quantity} больше доступного ({count}).",
+            flash(f"Ошибка: Запрашиваемое количество {quantity} больше доступного ({count[0][0]}).",
                       "danger")
         else:
             flash(f"Запрос {quantity} шт. '{item}' принят.", "success")
-            print("jr")
+            # print("jr")
             securing_inventory(conn, user_name, item, quantity)
             return redirect('/inventory_assign')
     return render_template('inventory_templates/inventory_assign.html', form=form, assigned_inventory=assigned_inventory,
@@ -193,6 +202,9 @@ def assign_inventory():
 
 @app.route('/inventory_request', methods=['GET', 'POST'])
 def request_inventory():
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role == "Администратор":
+        return redirect("/inventory_see")
     form = RequestInventoryForm()
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     form.item.choices = list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur)))
@@ -200,9 +212,8 @@ def request_inventory():
     if form.validate_on_submit():
         item = form.item.data
         quantity = form.quantity.data
-        print("dsds")
-
-        flash(f"Запрошено {quantity} шт. инвентаря '{item}'.", "success")
+        status = get_status_id_by_status(cur, 'Не рассмотрен')
+        add_request(current_user.id, item, quantity, status)
         return redirect('/inventory_request')
 
     return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,
