@@ -1,0 +1,26 @@
+{% extends "auth_templates/base.html" %}
+
+{% block content %}
+    <h3>Подтверждение открепления инвентаря</h3>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td><strong>Пользователь:</strong></td>
+                <td>{{ user_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Название инвентаря:</strong></td>
+                <td>{{ item_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Количество:</strong></td>
+                <td>{{ item_quantity }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        {{ form.submit(class='btn btn-danger') }}
+        <a href="/inventory_assign" class="btn btn-secondary">Назад</a>
+    </div>
+{% endblock %}

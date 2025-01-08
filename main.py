@@ -140,7 +140,7 @@ def inventory_edit(item_id):
         user_role=user_role)
 
 
-@app.route('/create-report', methods=['GET', 'POST'])
+@app.route('/create_report', methods=['GET', 'POST'])
 def make_report():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
@@ -152,7 +152,7 @@ def make_report():
         return redirect('/inventory_see')
     return render_template('inventory_templates/admin_reports.html', form=form,
         user_role=user_role,
-        active_page="create-report")
+        active_page="create_report")
 
 
 @app.route('/purchases', methods=['GET', 'POST'])
@@ -218,6 +218,22 @@ def request_inventory():
 
     return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,
         active_page="inventory_request")
+
+@app.route("/inventory_assign/<int:item_id>", methods=["GET", "POST"])
+def inventory_request(item_id):
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    form = ConfirmDetachInventoryForm()
+
+    if request.method == "POST":
+        if "submit" in request.form:
+            print("dsdsds")
+            return redirect("/inventory_assign")
+
+    return render_template("inventory_templates/inventory_assign_confirm.html", form=form,
+        user_role=user_role)
+
+
+
 
 if __name__ == "__main__":
     conn = get_db_connection()

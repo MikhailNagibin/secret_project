@@ -53,8 +53,11 @@
             <td>{{ record[2] }}</td>
             <td>{{ record[3] }}</td>
             <td>
-                <button class="btn btn-danger btn-sm">Открепить</button>
+                <form action="/inventory_assign/{{ loop.index }}" method="GET">
+                    <button type="submit" class="btn btn-danger btn-sm">Открепить</button>
+                </form>
             </td>
+
         </tr>
         {% endfor %}
     </tbody>
