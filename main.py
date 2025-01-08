@@ -199,7 +199,6 @@ def assign_inventory():
         active_page="inventory_assign")
 
 
-
 @app.route('/inventory_request', methods=['GET', 'POST'])
 def request_inventory():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
@@ -207,17 +206,18 @@ def request_inventory():
         return redirect("/inventory_see")
     form = RequestInventoryForm()
     user_role = get_role_by_id(cur, current_user.role)[0][0]
-    form.item.choices = list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur)))
-
+    form.item.choices = get_inventory_and_his_min_id(cur)
+    my_requests = get_my_requests(cur, current_user.id)
     if form.validate_on_submit():
         item = form.item.data
         quantity = form.quantity.data
         status = get_status_id_by_status(cur, 'Не рассмотрен')
-        add_request(current_user.id, item, quantity, status)
+        print(status)
+        add_request(conn, current_user.id, item, quantity, status[0][0])
         return redirect('/inventory_request')
 
     return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,
-        active_page="inventory_request")
+        active_page="inventory_request", inventory_items=my_requests)
 
 @app.route("/inventory_assign/<int:item_id>", methods=["GET", "POST"])
 def inventory_request(item_id):

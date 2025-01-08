@@ -170,8 +170,23 @@ def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name:
 
 def get_status_id_by_status(cur: psycopg2.extensions.cursor, status: str) -> list[tuple]:
     cur.execute('select id from request_status where status = %s', (status, ))
+    return cur.fetchall()
 
 def add_request(conn: psycopg2.extensions.connection, user_id: int, inventory_id, count: int, status_id: int) -> None:
     cur = conn.cursor()
     cur.execute("insert into requests(user_id, inventory_id, count, status_id) values(%s, %s, %s, %s)",
                 (user_id, inventory_id, count, status_id))
+    conn.commit()
+
+def get_my_requests(cur: psycopg2.extensions.cursor, user_id: int) -> list[tuple]:
+    cur.execute("""select i.name, r.count, rs.status from inventory as i inner join requests as r on r.inventory_id = i.id 
+	inner join request_status as rs on r.status_id = rs.id
+where r.user_id = %s""", (user_id,))
+    return cur.fetchall()
+
+def get_inventory_and_his_min_id(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("""SELECT MIN(id) AS id, name 
+                    FROM inventory 
+                    WHERE user_id = -1 
+                    GROUP BY name;""")
+    return cur.fetchall()
