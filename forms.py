@@ -87,14 +87,14 @@ class PurchasePlanForm(FlaskForm):
 
 
 class AssignInventoryForm(FlaskForm):
-    user_name = StringField('Имя пользователя', validators=[
-        DataRequired(message="Введите имя пользователя."),
-        Length(max=100, message="Имя пользователя должно быть не длиннее 100 символов.")
-    ])
-    user_name = SelectField('Выберите Пользователя', choices=[], validators=[
-        DataRequired(message="Выберите Пользователя.")
-    ])
-    item = SelectField('Выберите инвентарь', choices=[], validators=[
+    conn = get_db_connection()
+    cur = conn.cursor()
+    user_name = SelectField('Выберите Пользователя',
+                            choices=list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))),
+                            validators=[
+                                        DataRequired(message="Выберите Пользователя.")
+                                        ])
+    item = SelectField('Выберите инвентарь', choices=list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur))), validators=[
         DataRequired(message="Выберите инвентарь.")
     ])
     quantity = IntegerField('Количество', validators=[

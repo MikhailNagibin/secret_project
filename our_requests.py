@@ -70,9 +70,9 @@ def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
     return cur.fetchall()
 
 
-def get_free_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("select name, count(*) from invetory where user_id = -1 group by name")
-    return cur.execute()
+def get_free_inventory_for_zacrep(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("select name from inventory where user_id = -1 group by name order by name")
+    return cur.fetchall()
 
 
 def get_free_inventory_for_read(cur: psycopg2.extensions.cursor) -> list[tuple]:
@@ -149,6 +149,6 @@ def get_occupied_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
     return cur.fetchall()
 
 
-def get_users_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute('select firstname, surname from users')
+def get_users_id_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select id, firstname, surname from users where role_id > 1')
     return cur.fetchall()
