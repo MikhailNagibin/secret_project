@@ -84,3 +84,18 @@ class PurchasePlanForm(FlaskForm):
         NumberRange(min=1, message="Количество должно быть не меньше 1.")
     ])
     submit = SubmitField('Добавить в план закупок')
+
+
+class AssignInventoryForm(FlaskForm):
+    user_name = StringField('Имя пользователя', validators=[
+        DataRequired(message="Введите имя пользователя."),
+        Length(max=100, message="Имя пользователя должно быть не длиннее 100 символов.")
+    ])
+    item = SelectField('Выберите инвентарь', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    quantity = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    submit = SubmitField('Закрепить')

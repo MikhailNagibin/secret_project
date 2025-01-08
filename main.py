@@ -104,7 +104,7 @@ def inventory_add():
         conditions_id = get_condition_id_by_condition(cur, 'Новый')[0][0]
         for _ in range(form.quantity.data):
             add_inventory(conn, form.name.data, conditions_id)
-        return redirect('/inventory_see')
+        return redirect('/inventory_add')
     return render_template(
         "inventory_templates/inventory_add.html",
         user_role=user_role,
@@ -161,6 +161,37 @@ def add_to_purchase_plan():
     return render_template('inventory_templates/purchases.html', form=form,
         user_role=user_role,
         active_page="purchases")
+
+
+@app.route('/inventory_assign', methods=['GET', 'POST'])
+def assign_inventory():
+    form = AssignInventoryForm()
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    inventory_choices = [
+        ('Футбольный мяч', 'Футбольный мяч'),
+        ('Сетка для волейбола', 'Сетка для волейбола'),
+        ('Теннисная ракетка', 'Теннисная ракетка')
+    ]
+
+    form.item.choices = inventory_choices
+
+    assigned_inventory = [
+        ("Иван Иванов", "Футбольный мяч", 2),
+        ("Петр Петров", "Сетка для волейбола", 1),
+    ]
+
+    if form.validate_on_submit():
+        user_name = form.user_name.data
+        item = form.item.data
+        quantity = form.quantity.data
+
+        assigned_inventory.append((user_name, item, quantity))
+
+        return f"Инвентарь '{item}' успешно закреплен за пользователем '{user_name}' в количестве {quantity}."
+
+    return render_template('inventory_templates/inventory_assign.html', form=form, assigned_inventory=assigned_inventory,
+        user_role=user_role,
+        active_page="inventory_assign")
 
 
 if __name__ == "__main__":
