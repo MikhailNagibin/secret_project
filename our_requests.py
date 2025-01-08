@@ -155,7 +155,7 @@ def get_users_id_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[
 
 
 def get_count_of_free_inventory_by_name(cur: psycopg2.extensions.cursor, name: str) -> list[tuple]:
-    cur.execute('select count(*) from inventory where name = %s  and user_id > 0 group by name', (name, ))
+    cur.execute('select count(*) from inventory where name = %s  and user_id = -1 group by name', (name, ))
     return cur.fetchall()
 
 

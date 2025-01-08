@@ -166,6 +166,8 @@ def add_to_purchase_plan():
 @app.route('/inventory_assign', methods=['GET', 'POST'])
 def assign_inventory():
     form = AssignInventoryForm()
+    form.item.choices = list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur)))
+    form.user_name.choices = list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur)))
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     assigned_inventory = get_occupied_inventory(cur)
     if form.validate_on_submit():
@@ -173,6 +175,7 @@ def assign_inventory():
         item = form.item.data
         quantity = form.quantity.data
         count = get_count_of_free_inventory_by_name(cur, item)
+        print(count, quantity)
         if count and quantity > count[0][0]:
             # вывести ошибку
             pass
