@@ -91,6 +91,9 @@ class AssignInventoryForm(FlaskForm):
         DataRequired(message="Введите имя пользователя."),
         Length(max=100, message="Имя пользователя должно быть не длиннее 100 символов.")
     ])
+    user_name = SelectField('Выберите Пользователя', choices=[], validators=[
+        DataRequired(message="Выберите Пользователя.")
+    ])
     item = SelectField('Выберите инвентарь', choices=[], validators=[
         DataRequired(message="Выберите инвентарь.")
     ])

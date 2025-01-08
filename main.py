@@ -173,12 +173,22 @@ def assign_inventory():
         ('Теннисная ракетка', 'Теннисная ракетка')
     ]
 
+    users = [
+        ('Иван Иванов', 'Иван Иванов'),
+        ('Петр Петров', 'Петр Петров'),
+        ('aboba', 'aboba')
+    ]
+
     form.item.choices = inventory_choices
+    form.user_name.choices = users
 
     assigned_inventory = [
         ("Иван Иванов", "Футбольный мяч", 2),
         ("Петр Петров", "Сетка для волейбола", 1),
     ]
+
+
+
 
     if form.validate_on_submit():
         user_name = form.user_name.data
