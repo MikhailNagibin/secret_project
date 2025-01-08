@@ -32,9 +32,9 @@
     <tbody>
         {% for record in assigned_inventory %}
         <tr>
-            <td>{{ record[0] }}</td>
-            <td>{{ record[1] }}</td>
+            <td>{{ record[0] + ' ' +  record[1]}}</td>
             <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
             <!-- <td>
                 <button class="btn btn-danger btn-sm">Открепить</button>
             </td> -->
