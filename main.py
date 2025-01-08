@@ -178,8 +178,6 @@ def assign_inventory():
         else:
             securing_inventory(conn, user_name, item, quantity)
             return redirect('/inventory_see')
-        return f"Инвентарь '{item}' успешно закреплен за пользователем '{user_name}' в количестве {quantity}."
-
     return render_template('inventory_templates/inventory_assign.html', form=form, assigned_inventory=assigned_inventory,
         user_role=user_role,
         active_page="inventory_assign")
