@@ -103,3 +103,14 @@ class AssignInventoryForm(FlaskForm):
         NumberRange(min=1, message="Количество должно быть не меньше 1.")
     ])
     submit = SubmitField('Закрепить')
+
+
+class RequestInventoryForm(FlaskForm):
+    item = SelectField('Название инвентаря', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    quantity = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    submit = SubmitField('Запросить')

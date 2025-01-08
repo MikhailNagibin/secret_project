@@ -1,4 +1,5 @@
 from flask import *
+from flask import flash
 from flask_login import *
 from user import User
 from forms import *
@@ -177,15 +178,35 @@ def assign_inventory():
         count = get_count_of_free_inventory_by_name(cur, item)
         print(count, quantity)
         if count and quantity > count[0][0]:
-            # вывести ошибку
-            pass
+            flash(f"Ошибка: Запрашиваемое количество {quantity} больше доступного ({count}).",
+                      "danger")
         else:
+            flash(f"Запрос {quantity} шт. '{item}' принят.", "success")
+            print("jr")
             securing_inventory(conn, user_name, item, quantity)
             return redirect('/inventory_assign')
     return render_template('inventory_templates/inventory_assign.html', form=form, assigned_inventory=assigned_inventory,
         user_role=user_role,
         active_page="inventory_assign")
 
+
+
+@app.route('/inventory_request', methods=['GET', 'POST'])
+def request_inventory():
+    form = RequestInventoryForm()
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    form.item.choices = list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur)))
+
+    if form.validate_on_submit():
+        item = form.item.data
+        quantity = form.quantity.data
+        print("dsds")
+
+        flash(f"Запрошено {quantity} шт. инвентаря '{item}'.", "success")
+        return redirect('/inventory_request')
+
+    return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,
+        active_page="inventory_request")
 
 if __name__ == "__main__":
     conn = get_db_connection()

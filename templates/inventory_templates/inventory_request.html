@@ -1,0 +1,36 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+
+{% if messages %}
+    <h4>Сообщения:</h4>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% if get_flashed_messages() %}
+    <div class="alert alert-warning" role="alert">
+        {% for message in get_flashed_messages() %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<h3>Запрос инвентаря</h3>
+<form method="post" class="mb-4">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.item.label }}
+        {{ form.item(class="form-select") }}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity.label }}
+        {{ form.quantity(class="form-control", placeholder="Введите количество") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+
+{% endblock %}

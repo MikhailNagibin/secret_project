@@ -1,6 +1,23 @@
 {% extends "inventory_templates/base_inventory.html" %}
 
 {% block content %}
+
+{% if messages %}
+    <h4>Сообщения:</h4>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% if get_flashed_messages() %}
+    <div class="alert alert-warning" role="alert">
+        {% for message in get_flashed_messages() %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+
 <h3>Закрепление инвентаря за пользователями</h3>
 <form method="post" class="mb-4">
     {{ form.hidden_tag() }}
@@ -26,7 +43,7 @@
             <th>Пользователь</th>
             <th>Инвентарь</th>
             <th>Количество</th>
-            <!-- <th>Действия</th> -->
+            <th>Действия</th>
         </tr>
     </thead>
     <tbody>
@@ -35,9 +52,9 @@
             <td>{{ record[0] + ' ' +  record[1]}}</td>
             <td>{{ record[2] }}</td>
             <td>{{ record[3] }}</td>
-            <!-- <td>
+            <td>
                 <button class="btn btn-danger btn-sm">Открепить</button>
-            </td> -->
+            </td>
         </tr>
         {% endfor %}
     </tbody>
