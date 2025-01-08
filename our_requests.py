@@ -128,7 +128,7 @@ def add_inventory(conn: psycopg2.extensions.connection, name: str, condition_id)
     conn.commit()
 
 
-def create_plane(conn: psycopg2.extensions.connection, data: tuple):
+def create_plane(conn: psycopg2.extensions.connection, data: tuple) -> None:
     cur = conn.cursor()
     cur.execute("""insert into purchase_plan(name, count, price, supplier) 
                 values(%s, %s, %s, %s)""", data)
@@ -150,5 +150,19 @@ def get_occupied_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
 
 
 def get_users_id_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute('select id, firstname, surname from users where role_id > 1')
+    cur.execute('select id, firstname, surname from users where role_id > 1 order by firstname, surname')
     return cur.fetchall()
+
+
+def get_count_of_free_inventory_by_name(cur: psycopg2.extensions.cursor, name: str) -> list[tuple]:
+    cur.execute('select count(*) from inventory where name = %s  and user_id > 0 group by name', (name, ))
+    return cur.fetchall()
+
+
+def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name: str, quantity: int) -> None:
+    cur = conn.cursor()
+    cur.execute("""update inventory 
+                    set user_id = %s where id in (select id from inventory 
+                    where name = %s and user_id > 0 
+                    order by condition_id limit %s)""", (user_id, name, quantity))
+    conn.commit()

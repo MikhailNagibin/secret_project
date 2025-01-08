@@ -167,29 +167,17 @@ def add_to_purchase_plan():
 def assign_inventory():
     form = AssignInventoryForm()
     user_role = get_role_by_id(cur, current_user.role)[0][0]
-    inventory_choices = [
-        ('Футбольный мяч', 'Футбольный мяч'),
-        ('Сетка для волейбола', 'Сетка для волейбола'),
-        ('Теннисная ракетка', 'Теннисная ракетка')
-    ]
-
-
-
-    # form.item.choices = inventory_choices
-    # form.user_name.choices = users
-
     assigned_inventory = get_occupied_inventory(cur)
-
-
-
-
     if form.validate_on_submit():
         user_name = form.user_name.data
         item = form.item.data
         quantity = form.quantity.data
-
-        assigned_inventory.append((user_name, item, quantity))
-
+        if quantity > get_count_of_free_inventory_by_name(cur, item):
+            # вывести ошибку
+            pass
+        else:
+            securing_inventory(conn, user_name, item, quantity)
+            return redirect('/inventory_see')
         return f"Инвентарь '{item}' успешно закреплен за пользователем '{user_name}' в количестве {quantity}."
 
     return render_template('inventory_templates/inventory_assign.html', form=form, assigned_inventory=assigned_inventory,
