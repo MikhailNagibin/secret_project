@@ -1,0 +1,45 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+<h3>Закрепление инвентаря за пользователями</h3>
+<form method="post" class="mb-4">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.user_name.label }}
+        {{ form.user_name(class="form-control", placeholder="Введите имя пользователя") }}
+    </div>
+    <div class="mb-3">
+        {{ form.item.label }}
+        {{ form.item(class="form-select") }}
+    </div>
+    <div class="mb-3">
+        {{ form.quantity.label }}
+        {{ form.quantity(class="form-control", placeholder="Введите количество") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+<h4>Закрепленный инвентарь</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Пользователь</th>
+            <th>Инвентарь</th>
+            <th>Количество</th>
+            <!-- <th>Действия</th> -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in assigned_inventory %}
+        <tr>
+            <td>{{ record[0] }}</td>
+            <td>{{ record[1] }}</td>
+            <td>{{ record[2] }}</td>
+            <!-- <td>
+                <button class="btn btn-danger btn-sm">Открепить</button>
+            </td> -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
