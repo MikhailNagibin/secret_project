@@ -147,3 +147,8 @@ def get_occupied_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
                    group by u.firstname, i.name, u.surname
                    order by u.firstname , u.surname;""")
     return cur.fetchall()
+
+
+def get_users_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select firstname, surname from users')
+    return cur.fetchall()
