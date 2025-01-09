@@ -45,7 +45,8 @@ class EditInventoryForm(FlaskForm):
     cur = conn.cursor()
     data = get_conditions(cur)
     name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired()])
+    quantity = IntegerField("Количество", validators=[DataRequired(),
+                        NumberRange(min=1, message="Количество должно быть не меньше 1.")])
     status = SelectField(
         "Состояние", choices=data, coerce=int, default=data[0]
     )
