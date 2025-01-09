@@ -222,17 +222,19 @@ def request_inventory():
 @app.route("/inventory_assign/<int:item_id>", methods=["GET", "POST"])
 def inventory_request(item_id):
     user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role != "Администратор":
+        return redirect("/inventory_see")
+    data = get_occupied_inventory(cur)[item_id - 1]
     form = ConfirmDetachInventoryForm()
-
-    if request.method == "POST":
-        if "submit" in request.form:
-            print("dsdsds")
-            return redirect("/inventory_assign")
-
-    return render_template("inventory_templates/inventory_assign_confirm.html", form=form,
-        user_role=user_role)
-
-
+    form.user_name.data = data[0] + ' ' + data[1]
+    form.item.data = data[2]
+    form.quantity.data = data[3]
+    if request.method == 'POST':
+        user_id = get_user_id_by_fullname(cur, data[0], data[1])[0][0]
+        detaching_inventory(conn, user_id, data[2])
+        return redirect("/inventory_assign")
+    return render_template("inventory_templates/inventory_assign_confirm.html",
+        user_role=user_role, form=form)
 
 
 if __name__ == "__main__":

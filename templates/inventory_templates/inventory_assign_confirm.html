@@ -1,20 +1,22 @@
 {% extends "auth_templates/base.html" %}
 
 {% block content %}
+    {{ form.hidden_tag() }}
     <h3>Подтверждение открепления инвентаря</h3>
+<form method="post" class="mb-4">
     <table class="table table-bordered">
         <tbody>
             <tr>
-                <td><strong>Пользователь:</strong></td>
-                <td>{{ user_name }}</td>
+                <td ><strong>{{ form.user_name.label }}:</strong></td>
+                <td>{{ form.user_name.data }}</td>
             </tr>
             <tr>
-                <td><strong>Название инвентаря:</strong></td>
-                <td>{{ item_name }}</td>
+                <td><strong>{{ form.item.label }}:</strong></td>
+                <td>{{ form.item.data }}</td>
             </tr>
             <tr>
-                <td><strong>Количество:</strong></td>
-                <td>{{ item_quantity }}</td>
+                <td><strong>{{ form.quantity.label }}:</strong></td>
+                <td>{{ form.quantity.data }}</td>
             </tr>
         </tbody>
     </table>
@@ -23,4 +25,5 @@
         {{ form.submit(class='btn btn-danger') }}
         <a href="/inventory_assign" class="btn btn-secondary">Назад</a>
     </div>
+    </form>
 {% endblock %}

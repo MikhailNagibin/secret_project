@@ -114,3 +114,10 @@ class RequestInventoryForm(FlaskForm):
         NumberRange(min=1, message="Количество должно быть не меньше 1.")
     ])
     submit = SubmitField('Запросить')
+
+
+class ConfirmDetachInventoryForm(FlaskForm):
+    user_name = StringField('Имя пользозвателя')
+    item = StringField('Инвентарь')
+    quantity = StringField('Количество')
+    submit = SubmitField('Удалить')
