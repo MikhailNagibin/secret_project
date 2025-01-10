@@ -1,0 +1,46 @@
+{% extends "auth_templates/base.html" %}
+
+{% block content %}
+    {% if approved %}
+        <h3>Подтверждение закрепления</h3>
+    {% else %}
+        <h3>Подтверждение отказа запроса</h3>
+    {% endif %}
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td ><strong>Имя пользователя :</strong></td>
+                <td>{{ data[0] + ' ' + data[1] }}</td>
+            </tr>
+            <tr>
+                <td><strong>Название инвентаря:</strong></td>
+                <td>{{ data[2] }}</td>
+            </tr>
+            <tr>
+                <td><strong>Количество:</strong></td>
+                <td>{{ data[3] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+    <div style="display: inline-block;">
+        {% if approved %}
+            <form method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" class="btn btn-warning">Подтвердить</button>
+            </form>
+        {% else %}
+            <form method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger">Отклонить</button>
+            </form>
+        {% endif %}
+    </div>
+    <div style="display: inline-block; margin-left: 10px;">
+        <a href="/application" class="btn btn-secondary">Назад</a>
+    </div>
+</div>
+</div>
+
+{% endblock %}

@@ -164,7 +164,8 @@ def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name:
     cur.execute("""update inventory 
                     set user_id = %s where id in (select id from inventory 
                     where name = %s and user_id = -1 
-                    order by condition_id limit %s)""", (user_id, name, quantity))
+                    order by condition_id 
+                    limit %s)""", (user_id, name, quantity))
     conn.commit()
 
 
@@ -181,9 +182,9 @@ def add_request(conn: psycopg2.extensions.connection, user_id: int, inventory_id
 
 
 def get_my_requests(cur: psycopg2.extensions.cursor, user_id: int) -> list[tuple]:
-    cur.execute("""select i.name, r.count, rs.status from inventory as i inner join requests as r on r.inventory_id = i.id 
+    cur.execute("""select r.id, i.name, r.count, rs.status from inventory as i inner join requests as r on r.inventory_id = i.id 
 	inner join request_status as rs on r.status_id = rs.id
-where r.user_id = %s""", (user_id,))
+where r.user_id = %s order by r.id""", (user_id,))
     return cur.fetchall()
 
 
@@ -206,4 +207,28 @@ def detaching_inventory(conn: psycopg2.extensions.connection, user_id: int, inve
     cur.execute("""update inventory 
                          set user_id = -1 
                          where name = %s and user_id = %s""", (invevntory, user_id))
+    conn.commit()
+
+
+def get_requests(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("""select r.id, u.firstname, u.surname, i.name, r.count from users as u inner join requests as r on r.user_id = u.id
+                   inner join inventory  as i on r.inventory_id = i.id
+                   where r.status_id in (select id from request_status where status = 'Не рассмотрен')""")
+    return cur.fetchall()
+
+
+def get_status_id_by_status(cur: psycopg2.extensions.cursor, status: str) -> list[tuple]:
+    cur.execute('select id from request_status where status = %s', (status, ))
+    return  cur.fetchall()
+
+
+def change_status_id(conn: psycopg2.extensions.connection, request_id: int, status_id: int) -> None:
+    cur = conn.cursor()
+    cur.execute('update requests set status_id = %s where id = %s', (status_id, request_id))
+    conn.commit()
+
+
+def delete_request(conn: psycopg2.extensions.connection, request_id: int):
+    cur = conn.cursor()
+    cur.execute('delete from requests where id = %s', (request_id, ))
     conn.commit()

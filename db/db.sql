@@ -70,7 +70,7 @@ status varchar(50)
 
 insert into request_status(status) values
 ('Не рассмотрен'),
-('Адобрен'),
+('Одобрен'),
 ('Откланен');
 
 
