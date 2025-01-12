@@ -31,7 +31,7 @@ def logout():
 
 
 @app.route("/", methods=["GET", "POST"])
-def autorisation():
+def autorisation(): # Для всех
     if current_user.is_authenticated:
         return redirect("/inventory_see")
     form = AutorisationForm()
@@ -53,7 +53,7 @@ def autorisation():
 
 
 @app.route("/register", methods=["GET", "POST"])
-def registration():
+def registration(): # Для новых пользователей
     if current_user.is_authenticated:
         return redirect("/inventory_see")
     form = RegistrationForm()
@@ -84,7 +84,7 @@ def registration():
 
 
 @app.route("/inventory_see")
-def inventory_see():
+def inventory_see(): # Для всех
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     inventory_items = get_free_inventory_for_read(cur)
     return render_template(
@@ -96,7 +96,7 @@ def inventory_see():
 
 
 @app.route("/inventory_add", methods=["GET", "POST"])
-def inventory_add():
+def inventory_add(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -115,7 +115,7 @@ def inventory_add():
 
 
 @app.route("/inventory_see/<int:item_id>", methods=["GET", "POST"])
-def inventory_edit(item_id):
+def inventory_edit(item_id): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -141,7 +141,7 @@ def inventory_edit(item_id):
 
 
 @app.route('/create_report', methods=['GET', 'POST'])
-def make_report():
+def make_report(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -156,7 +156,7 @@ def make_report():
 
 
 @app.route('/purchases', methods=['GET', 'POST'])
-def add_to_purchase_plan():
+def add_to_purchase_plan(): # Для админа
     # user_role = get_role_by_id(cur, current_user.role)[0][0]
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
@@ -171,7 +171,7 @@ def add_to_purchase_plan():
 
 
 @app.route('/inventory_assign', methods=['GET', 'POST'])
-def assign_inventory():
+def assign_inventory(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -200,7 +200,7 @@ def assign_inventory():
 
 
 @app.route('/inventory_request', methods=['GET', 'POST'])
-def request_inventory():
+def request_inventory(): # ДЛя пользователя
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role == "Администратор":
         return redirect("/inventory_see")
@@ -208,7 +208,6 @@ def request_inventory():
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     form.item.choices = get_inventory_and_his_min_id(cur)
     my_requests = get_my_requests(cur, current_user.id)
-    print(my_requests)
     if form.validate_on_submit():
         item = form.item.data
         quantity = form.quantity.data
@@ -228,8 +227,9 @@ def request_inventory():
     return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,
         active_page="inventory_request", inventory_items=my_requests)
 
+
 @app.route("/inventory_assign/<int:item_id>", methods=["GET", "POST"])
-def inventory_request(item_id):
+def inventory_request(item_id): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -248,9 +248,8 @@ def inventory_request(item_id):
 
 
 @app.route('/application', methods=['GET', "POST"])
-def application():
+def application(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
-    print(request.method)
     if user_role != "Администратор":
         return redirect("/inventory_see")
     data = get_requests(cur)
@@ -259,32 +258,36 @@ def application():
 
 
 @app.route('/application/<string:approved>/<int:item_id>', methods=['GET', 'POST'])
-def application_approved(approved: str, item_id: int):
+def application_approved(approved: str, item_id: int): # Для админа
     approved = approved.lower() == 'true'
-    print(request.method)
+    user_role = get_role_by_id(cur, current_user.id)[0][0]
+    if user_role != "Администратор":
+        return redirect('/inventory_see')
     data = get_requests(cur)[item_id  - 1]
-    if request.form.get('_method') == 'PUT':
-        status_id = get_status_id_by_status(cur, 'Одобрен')[0][0]
-        change_status_id(conn, data[0], status_id)
-        print(status_id)
-        print(data)
-        count = get_count_of_free_inventory_by_name(cur, data[-2])
-        if count and data[-1] > count[0][0]:
-            flash(f"Ошибка: Запрашиваемое количество {data[-1]} больше доступного ({count[0][0]}).",
-                  "danger")
-        else:
-            flash(f"Запрос {data[-1]} шт. '{data[-2]}' принят.", "success")
-            user_id = get_user_id_by_fullname(cur, data[1], data[2])[0][0]
-            securing_inventory(conn, user_id, data[-2], data[-1])
-        return redirect('/application')
-    elif request.form.get('_method') == 'DELETE':
-        status_id = get_status_id_by_status(cur, 'Откланен')[0][0]
-        change_status_id(conn, data[0],  status_id)
-        return redirect('/application')
-    return render_template('inventory_templates/application_confirm.html',  data=data[1:], approved=approved)
+    if request.method == 'POST':
+        if request.form.get('_method') == 'PUT':
+            count = get_count_of_free_inventory_by_name(cur, data[-2])
+            # print(count, not count, data[-1], data[-1] > count[0][0], )
+            if not count or data[-1] > count[0][0]:
+                flash(f"Ошибка: Запрашиваемое количество {data[-1]} больше доступного ({count[0][0]}).",
+                      "danger")
+                return render_template('inventory_templates/application_confirm.html',
+                                       data=data[1:], approved=approved,
+                                       message=f"Ошибка: Запрашиваемое количество {data[-1]} больше доступного ({count[0][0]}).")
+            else:
+                status_id = get_status_id_by_status(cur, 'Одобрен')[0][0]
+                change_status_id(conn, data[0], status_id)
+                user_id = get_user_id_by_fullname(cur, data[1], data[2])[0][0]
+                securing_inventory(conn, user_id, data[-2], data[-1])
+                return redirect('/application')
+        elif request.form.get('_method') == 'DELETE':
+            status_id = get_status_id_by_status(cur, 'Откланен')[0][0]
+            change_status_id(conn, data[0],  status_id)
+            return redirect('/application')
+    return render_template('inventory_templates/application_confirm.html',  data=data[1:], approved=approved, message='')
 
 
 if __name__ == "__main__":
     conn = get_db_connection()
     cur = conn.cursor()
-    app.run(port=8000, host="127.0.0.1", debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)
