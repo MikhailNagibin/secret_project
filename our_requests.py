@@ -232,3 +232,9 @@ def delete_request(conn: psycopg2.extensions.connection, request_id: int):
     cur = conn.cursor()
     cur.execute('delete from requests where id = %s', (request_id, ))
     conn.commit()
+
+
+def add_repair_requests(conn: psycopg2.extensions.connection, data: tuple) -> None:
+    cur = conn.cursor()
+    cur.execute("insert into repair_requests(inventory_id, count, replace) values (%s,%s, %s)", data)
+    conn.commit()

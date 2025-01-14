@@ -3,9 +3,11 @@ id serial primary key unique ,
 role varchar(50)
 );
 
+
 insert into Roles (role) values
 ('Администратор'),
 ('Пользователь');
+
 
 create table Users (
 id serial unique primary key,
@@ -68,10 +70,11 @@ id serial primary key unique,
 status varchar(50)
 );
 
+
 insert into request_status(status) values
 ('Не рассмотрен'),
 ('Одобрен'),
-('Откланен');
+('Отклонен');
 
 
 create table requests (
@@ -83,4 +86,12 @@ status_id int,
 foreign key (user_id) references Users(id),
 foreign key (inventory_id) references inventory(id),
 foreign key (status_id) references request_status(id)
+);
+
+
+create table repair_requests (
+id serial primary key unique,
+inventory_id int,
+count int,
+replace bool
 );

@@ -260,7 +260,7 @@ def application(): # Для админа
 @app.route('/application/<string:approved>/<int:item_id>', methods=['GET', 'POST'])
 def application_approved(approved: str, item_id: int): # Для админа
     approved = approved.lower() == 'true'
-    user_role = get_role_by_id(cur, current_user.id)[0][0]
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect('/inventory_see')
     data = get_requests(cur)[item_id  - 1]
@@ -285,6 +285,21 @@ def application_approved(approved: str, item_id: int): # Для админа
             change_status_id(conn, data[0],  status_id)
             return redirect('/application')
     return render_template('inventory_templates/application_confirm.html',  data=data[1:], approved=approved, message='')
+
+
+
+@app.route('/repair_requests', methods=['GET', "POST"])
+def repair_requests(): #Для пользователя
+    user_role = get_role_by_id(cur, current_user.role)[0][0]
+    if user_role == "Администратор":
+        return redirect("/inventory_see")
+    form = Repair_Requests()
+    form.item.choices = get_inventory_and_his_min_id(cur)
+    if form.validate_on_submit():
+        data = (form.item.data, form.count.data, form.replace.data)
+        add_repair_requests(conn, data)
+    return render_template('inventory_templates/repair_requests.html', form=form,
+                           active_page='repair_requests', user_role=user_role)
 
 
 if __name__ == "__main__":

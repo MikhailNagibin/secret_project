@@ -122,3 +122,14 @@ class ConfirmDetachInventoryForm(FlaskForm):
     item = StringField('Инвентарь')
     quantity = StringField('Количество')
     submit = SubmitField('Удалить')
+
+class Repair_Requests(FlaskForm):
+    item = SelectField('Выберите инвентарь', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    count = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    replace = BooleanField("Возможно починить")
+    submit = SubmitField('Добавить запрос')
