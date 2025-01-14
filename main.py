@@ -83,15 +83,25 @@ def registration(): # Для новых пользователей
     )
 
 
-@app.route("/inventory_see")
+@app.route("/inventory_see", methods=['GET', 'POST'])
 def inventory_see(): # Для всех
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     inventory_items = get_free_inventory_for_read(cur)
+    data = []
+    if user_role == 'Пользователь':
+        data = get_inventory_by_user_id(cur, current_user.id)
+    if request.method == 'POST':
+        item = request.form.get('itemId')
+        data = data[int(item) - 1]
+        print(item)
+        detaching_inventory(conn, current_user.id, data[2])
+        return redirect('/inventory_see')
     return render_template(
         "inventory_templates/inventory_see.html",
         user_role=user_role,
         inventory_items=inventory_items,
         active_page="inventory_see",
+        data=data
     )
 
 
@@ -157,7 +167,6 @@ def make_report(): # Для админа
 
 @app.route('/purchases', methods=['GET', 'POST'])
 def add_to_purchase_plan(): # Для админа
-    # user_role = get_role_by_id(cur, current_user.role)[0][0]
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
@@ -212,13 +221,10 @@ def request_inventory(): # ДЛя пользователя
         item = form.item.data
         quantity = form.quantity.data
         status = get_status_id_by_status(cur, 'Не рассмотрен')
-        print(status)
         add_request(conn, current_user.id, item, quantity, status[0][0])
         return redirect('/inventory_request')
     if request.method == 'POST':
-
         data = request.form.get('_method').split()
-        print(data)
         if data[0] == 'Delete':
             pass
             # print(my_requests[int(data[-1])][0])

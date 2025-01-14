@@ -238,3 +238,11 @@ def add_repair_requests(conn: psycopg2.extensions.connection, data: tuple) -> No
     cur = conn.cursor()
     cur.execute("insert into repair_requests(inventory_id, count, replace) values (%s,%s, %s)", data)
     conn.commit()
+
+
+def get_inventory_by_user_id(cur: psycopg2.extensions.cursor, user_id):
+    cur.execute("""select u.firstname, u.surname, i.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+                       where u.id = %s
+                       group by u.firstname, i.name, u.surname
+                       order by u.firstname , u.surname;""", (user_id, ))
+    return cur.fetchall()
