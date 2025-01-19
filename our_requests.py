@@ -21,15 +21,30 @@ def generate_password(password: str) -> str:  # получить хеш паро
     return sha256(password.encode()).hexdigest()
 
 
-def get_user_by_id(
-    cur: psycopg2.extensions.cursor, id: int
-) -> list[tuple]:  # получить информацию о польователе по его id
+def get_user_by_id(cur: psycopg2.extensions.cursor, id: int) -> list[tuple]:  # получить информацию о польователе по его id
     cur.execute("select * from Users where id = %s", (id,))
     return cur.fetchall()
 
 
 def get_user_by_email(cur: psycopg2.extensions.cursor, email: str) -> list[tuple]:
     cur.execute("select * from Users where email = %s", (email,))
+    return cur.fetchall()
+
+
+def get_inventory_name_id_by_name(cur: psycopg2.extensions.cursor, name: str) -> list[tuple]:
+    cur.execute('select id from  inventory_name '
+                'where name = %s', (name, ))
+    return cur.fetchall()
+
+
+def add_inventory_name_and_get_it_id(conn: psycopg2.extensions.connection, name: str) -> None:
+    cur = conn.cursor()
+    cur.execute("insert into inventory_name(name) values (%s)", (name, ))
+    conn.commit()
+
+
+def get_all_from_inventory_name(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('Select * from inventory_name')
     return cur.fetchall()
 
 
@@ -43,8 +58,7 @@ def get_roles(cur: psycopg2.extensions.cursor) -> list[tuple]:
     return cur.fetchall()
 
 
-def add_user(
-    conn: psycopg2.extensions.connection, data: tuple ) -> None:  # внести нового пользователя в бд
+def add_user(conn: psycopg2.extensions.connection, data: tuple ) -> None:  # внести нового пользователя в бд
     cur = conn.cursor()
     cur.execute(
         "insert into users(firstname, surname, email, user_password, role_id) "
@@ -60,33 +74,24 @@ def add_inventory(conn: psycopg2.extensions.connection, data: tuple) -> None:
     conn.commit()
 
 
-def get_all_inventory_without_condition(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("select name, count(*) from inventory group by name")
-    return cur.fetchall()
-
-
 def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
     cur.execute("select * from conditions")
     return cur.fetchall()
 
 
 def get_free_inventory_for_zacrep(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("select name from inventory where user_id = -1 group by name order by name")
+    cur.execute("select i.name, i_n.name from inventory as i inner join inventory_name as i_n on i.name = i_n.id group by i_n.name, i.name order by i_n.name")
     return cur.fetchall()
 
 
 def get_free_inventory_for_read(cur: psycopg2.extensions.cursor) -> list[tuple]:
     cur.execute(
-        """select i.name, count(*), c.condition from inventory as i inner join conditions as c on i.condition_id = c.id
+        """select i_n.name, count(*), c.condition from inventory as i inner join conditions as c on i.condition_id = c.id
+                    inner join inventory_name as i_n on i_n.id = i.name
                    where i.user_id = -1
-                   group by i.name, c.condition, i.condition_id
-                   order by i.condition_id, i.name"""
+                   group by i_n.name, c.condition, i.condition_id
+                   order by i.condition_id, i_n.name"""
     )
-    return cur.fetchall()
-
-
-def get_conditions(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("select * from conditions")
     return cur.fetchall()
 
 
@@ -97,32 +102,11 @@ def get_condition_id_by_condition(
 
 
 def delete_inventory_by_name_and_condition_id(
-    conn: psycopg2.extensions.connection, name: str, condition_id) -> None:
+    conn: psycopg2.extensions.connection, name: int, condition_id:int) -> None:
     cur = conn.cursor()
     cur.execute(
-        "Delete from inventory " "where name = %s and condition_id = %s",
-        (name, condition_id),
-    )
-    conn.commit()
-
-
-def delete_inventory_by_name_and_condition_id_and_count(
-    conn: psycopg2.extensions.connection, name: str, condition_id: int, count: int) -> None:
-    cur = conn.cursor()
-    cur.execute(
-        """DELETE FROM inventory
-                    WHERE id IN (
-                    SELECT id FROM inventory
-                    WHERE name = %s and condition_id = %s
-                    LIMIT %s)""",
-        (name, condition_id, count),
-    )
-
-
-def add_inventory(conn: psycopg2.extensions.connection, name: str, condition_id) -> None:
-    cur = conn.cursor()
-    cur.execute(
-        """insert into inventory(name, condition_id) values (%s, %s)""",
+        "Delete from inventory "
+        "where name = %s and condition_id = %s",
         (name, condition_id),
     )
     conn.commit()
@@ -142,9 +126,10 @@ def create_report(conn: psycopg2.extensions.connection, name: str, report: str) 
 
 
 def get_occupied_inventory(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("""select u.firstname, u.surname, i.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+    cur.execute("""select u.firstname, u.surname, i_n.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+                   inner join inventory_name as i_n  on i.name = i_n.id
                    where u.id > 0
-                   group by u.firstname, i.name, u.surname
+                   group by u.firstname, i_n.name, u.surname
                    order by u.firstname , u.surname;""")
     return cur.fetchall()
 
@@ -154,12 +139,12 @@ def get_users_id_firstname_and_surname(cur: psycopg2.extensions.cursor) -> list[
     return cur.fetchall()
 
 
-def get_count_of_free_inventory_by_name(cur: psycopg2.extensions.cursor, name: str) -> list[tuple]:
-    cur.execute('select count(*) from inventory where name = %s  and user_id = -1 group by name', (name, ))
+def get_count_of_free_inventory_by_name(cur: psycopg2.extensions.cursor, name: int) -> list[tuple]:
+    cur.execute('select count(*) from inventory where name = %s and user_id = -1 group by name', (name, ))
     return cur.fetchall()
 
 
-def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name: str, quantity: int) -> None:
+def securing_inventory(conn: psycopg2.extensions.connection, user_id: int, name: int, quantity: int) -> None:
     cur = conn.cursor()
     cur.execute("""update inventory 
                     set user_id = %s where id in (select id from inventory 
@@ -176,23 +161,15 @@ def get_status_id_by_status(cur: psycopg2.extensions.cursor, status: str) -> lis
 
 def add_request(conn: psycopg2.extensions.connection, user_id: int, inventory_id, count: int, status_id: int) -> None:
     cur = conn.cursor()
-    cur.execute("insert into requests(user_id, inventory_id, count, status_id) values(%s, %s, %s, %s)",
+    cur.execute("insert into requests(user_id, inventory_name_id, count, status_id) values(%s, %s, %s, %s)",
                 (user_id, inventory_id, count, status_id))
     conn.commit()
 
 
 def get_my_requests(cur: psycopg2.extensions.cursor, user_id: int) -> list[tuple]:
-    cur.execute("""select r.id, i.name, r.count, rs.status from inventory as i inner join requests as r on r.inventory_id = i.id 
-	inner join request_status as rs on r.status_id = rs.id
-where r.user_id = %s order by r.id""", (user_id,))
-    return cur.fetchall()
-
-
-def get_inventory_and_his_min_id(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("""SELECT MIN(id) AS id, name 
-                    FROM inventory 
-                    WHERE user_id = -1 
-                    GROUP BY name;""")
+    cur.execute("""select r.id, i_n.name, r.count, rs.status from inventory_name as i_n inner join requests as r on r.inventory_name_id = i_n.id 
+	                     inner join request_status as rs on r.status_id = rs.id
+                         where r.user_id = %s order by r.id""", (user_id,))
     return cur.fetchall()
 
 
@@ -202,24 +179,19 @@ def get_user_id_by_fullname(cur: psycopg2.extensions.cursor, name: str, surname:
     return cur.fetchall()
 
 
-def detaching_inventory(conn: psycopg2.extensions.connection, user_id: int, invevntory: str) -> None:
+def detaching_inventory(conn: psycopg2.extensions.connection, user_id: int, name: int) -> None:
     cur = conn.cursor()
     cur.execute("""update inventory 
                          set user_id = -1 
-                         where name = %s and user_id = %s""", (invevntory, user_id))
+                         where name = %s and user_id = %s""", (name, user_id))
     conn.commit()
 
 
 def get_requests(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute("""select r.id, u.firstname, u.surname, i.name, r.count from users as u inner join requests as r on r.user_id = u.id
-                   inner join inventory  as i on r.inventory_id = i.id
+    cur.execute("""select r.id, u.firstname, u.surname, i_n.name, r.count from users as u inner join requests as r on r.user_id = u.id
+                   inner join inventory_name as i_n on i_n.id = r.inventory_name_id
                    where r.status_id in (select id from request_status where status = 'Не рассмотрен')""")
     return cur.fetchall()
-
-
-def get_status_id_by_status(cur: psycopg2.extensions.cursor, status: str) -> list[tuple]:
-    cur.execute('select id from request_status where status = %s', (status, ))
-    return  cur.fetchall()
 
 
 def change_status_id(conn: psycopg2.extensions.connection, request_id: int, status_id: int) -> None:
@@ -236,13 +208,14 @@ def delete_request(conn: psycopg2.extensions.connection, request_id: int):
 
 def add_repair_requests(conn: psycopg2.extensions.connection, data: tuple) -> None:
     cur = conn.cursor()
-    cur.execute("insert into repair_requests(inventory_id, count, replace) values (%s,%s, %s)", data)
+    cur.execute("insert into repair_requests(inventory_name_id, count, replace) values (%s,%s, %s)", data)
     conn.commit()
 
 
 def get_inventory_by_user_id(cur: psycopg2.extensions.cursor, user_id):
-    cur.execute("""select u.firstname, u.surname, i.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+    cur.execute("""select u.firstname, u.surname, i_n.name, count(*) from users as u inner join inventory as i on i.user_id = u.id
+                         inner join inventory_name as i_n  on i.name  = i_n.id
                        where u.id = %s
-                       group by u.firstname, i.name, u.surname
+                       group by u.firstname, i_n.name, u.surname
                        order by u.firstname , u.surname;""", (user_id, ))
     return cur.fetchall()
