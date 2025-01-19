@@ -187,7 +187,7 @@ def add_to_purchase_plan(): # Для админа
     form = PurchasePlanForm()
     if form.validate_on_submit():
         create_plane(conn, (form.item_name.data, form.quantity.data, form.price.data, form.supplier.data))
-        return redirect('/inventory_see')
+        return redirect('/purchases')
     return render_template('inventory_templates/purchases.html', form=form,
         user_role=user_role,
         active_page="purchases")

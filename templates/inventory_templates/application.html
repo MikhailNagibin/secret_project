@@ -1,7 +1,7 @@
 {% extends "inventory_templates/base_inventory.html" %}
 
 {% block content %}
-<h4>Список инвентаря</h4>
+<h3>Список заявок</h3>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -13,6 +13,7 @@
         </tr>
     </thead>
     <tbody>
+        {% if inventory_items %}
         {% for item in inventory_items %}
         <tr>
             <td>{{ item[1] + ' ' + item[2] }}</td>
@@ -25,8 +26,12 @@
                 <a href="/application/False/{{ loop.index }}" class="btn btn-warning btn-sm">Отклонить</a>
             </td>
         </tr>
-
         {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center">Нет активных заявок</td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 {% endblock %}

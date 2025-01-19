@@ -14,6 +14,7 @@
     </tr>
     </thead>
     <tbody>
+    {% if inventory_items %}
     {% for item in inventory_items %}
     <tr>
         <td>{{ item[0] }}</td>
@@ -28,6 +29,11 @@
         {% endif %}
     </tr>
     {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4" class="text-center">Нет доступного инвентаря</td>
+    </tr>
+    {% endif %}
     </tbody>
 </table>
 

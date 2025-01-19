@@ -121,7 +121,7 @@ class ConfirmDetachInventoryForm(FlaskForm):
     user_name = StringField('Имя пользозвателя')
     item = StringField('Инвентарь')
     quantity = StringField('Количество')
-    submit = SubmitField('Удалить')
+    submit = SubmitField('Открепить')
 
 class Repair_Requests(FlaskForm):
     item = SelectField('Выберите инвентарь', choices=[], validators=[

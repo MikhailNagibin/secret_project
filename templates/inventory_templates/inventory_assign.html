@@ -47,6 +47,7 @@
         </tr>
     </thead>
     <tbody>
+        {% if assigned_inventory %}
         {% for record in assigned_inventory %}
         <tr>
             <td>{{ record[0] + ' ' +  record[1]}}</td>
@@ -60,6 +61,32 @@
 
         </tr>
         {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center">Нет закрепелённого инвентаря</td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 {% endblock %}
+
+    {% if inventory_items %}
+    {% for item in inventory_items %}
+    <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }}</td>
+        <td>{{ item[2] }}</td>
+        {% if user_role == 'Администратор' %}
+        <td>
+            <form action="/inventory_see/{{ loop.index }}" method="GET">
+                <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
+            </form>
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4" class="text-center">Нет доступного инвентаря</td>
+    </tr>
+    {% endif %}
