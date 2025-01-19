@@ -35,18 +35,29 @@
     <button id="toggle-sidebar" class="btn btn-primary btn-sm"><</button>
 
     <script>
-        const toggleButton = document.getElementById("toggle-sidebar");
-        const sidebar = document.querySelector(".sidebar");
+    const toggleButton = document.getElementById("toggle-sidebar");
+    const sidebar = document.querySelector(".sidebar");
+
+    let isHidden = false;
+
+    const updateButtonPosition = () => {
+        if (isHidden) {
+            toggleButton.style.right = "10px";
+            toggleButton.textContent = "<";
+        } else {
+            toggleButton.style.right = "250px";
+            toggleButton.textContent = ">";
+        }
+    };
+
+    updateButtonPosition();
+
+    toggleButton.addEventListener("click", () => {
         sidebar.classList.toggle("hidden");
-        toggleButton.addEventListener("click", () => {
-            if (sidebar.classList.contains("hidden")) {
-                toggleButton.style.right = "250px";
-                sidebar.classList.toggle("hidden");
-            } else {
-                toggleButton.style.right = "10px";
-                sidebar.classList.toggle("hidden");
-            }
-        });
-    </script>
+        isHidden = !isHidden;
+
+        updateButtonPosition();
+    });
+</script>
 </body>
 </html>
