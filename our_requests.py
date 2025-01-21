@@ -219,3 +219,14 @@ def get_inventory_by_user_id(cur: psycopg2.extensions.cursor, user_id):
                        group by u.firstname, i_n.name, u.surname
                        order by u.firstname , u.surname;""", (user_id, ))
     return cur.fetchall()
+
+
+def get_all_purchases(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute("select * from purchase_plan")
+    return cur.fetchall()
+
+
+def delete_purchase(conn: psycopg2.extensions.connection, num: int)  -> None:
+    cur  = conn.cursor()
+    cur.execute('delete from purchase_plan  where id = %s', (num, ))
+    conn.commit()

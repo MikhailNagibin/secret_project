@@ -184,13 +184,19 @@ def add_to_purchase_plan(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
+    data = get_all_purchases(cur)
     form = PurchasePlanForm()
     if form.validate_on_submit():
         create_plane(conn, (form.item_name.data, form.quantity.data, form.price.data, form.supplier.data))
         return redirect('/purchases')
+    if request.method == 'POST':
+        num = int(request.form.get('_method'))
+        plane = data[num - 1][0]
+        delete_purchase(conn, plane)
+        return redirect('/purchases')
     return render_template('inventory_templates/purchases.html', form=form,
         user_role=user_role,
-        active_page="purchases")
+        active_page="purchases", data=data)
 
 
 @app.route('/inventory_assign', methods=['GET', 'POST'])
@@ -240,7 +246,6 @@ def request_inventory(): # ДЛя пользователя
     if request.method == 'POST':
         data = request.form.get('_method').split()
         if data[0] == 'Delete':
-            pass
             delete_request(conn, my_requests[int(data[-1]) - 1][0])
             return redirect('/inventory_request')
     return render_template('inventory_templates/inventory_request.html', form=form, user_role=user_role,

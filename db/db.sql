@@ -21,6 +21,7 @@ condition varchar(30)
 );
 
 
+
 create table inventory_name (
 id serial primary key unique,
 name varchar(50) unique
