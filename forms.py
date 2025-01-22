@@ -56,10 +56,11 @@ class EditInventoryForm(FlaskForm):
 
 
 class ReportForm(FlaskForm):
-    sender_name = StringField('Имя отправляющего', validators=[
-        DataRequired(message="Поле обязательно для заполнения."),
-        Length(max=100, message="Имя должно быть не длиннее 100 символов.")
-    ])
+    sender_name = SelectField('На чьё имя отчёт',
+                            choices=[],
+                            validators=[
+                                        DataRequired(message="Выберите Пользователя.")
+                                        ])
     report_content = TextAreaField('Содержание отчета', validators=[
         DataRequired(message="Введите текст отчета."),
         Length(max=1000, message="Отчет не должен превышать 1000 символов.")

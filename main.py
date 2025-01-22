@@ -169,8 +169,9 @@ def make_report(): # Для админа
     user_role = get_role_by_id(cur, current_user.role)[0][0]
     if user_role != "Администратор":
         return redirect("/inventory_see")
-    user_role = get_role_by_id(cur, current_user.role)[0][0]
     form = ReportForm()
+    print(list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))))
+    form.sender_name.choices = list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur)))
     if form.validate_on_submit():
         create_report(conn, form.sender_name.data, form.report_content.data)
         return redirect('/inventory_see')
