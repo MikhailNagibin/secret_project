@@ -230,3 +230,14 @@ def delete_purchase(conn: psycopg2.extensions.connection, num: int)  -> None:
     cur  = conn.cursor()
     cur.execute('delete from purchase_plan  where id = %s', (num, ))
     conn.commit()
+
+
+def get_all_reports(cur: psycopg2.extensions.cursor) -> list[tuple]:
+    cur.execute('select * from reports')
+    return cur.fetchall()
+
+
+def delete_report_by_id(conn: psycopg2.extensions.connection, num: int) -> None:
+    cur = conn.cursor()
+    cur.execute('delete from reports where id = %s', (num, ))
+    conn.commit()

@@ -170,14 +170,20 @@ def make_report(): # Для админа
     if user_role != "Администратор":
         return redirect("/inventory_see")
     form = ReportForm()
-    print(list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))))
+    data = get_all_reports(cur)
+    # print(list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))))
     form.sender_name.choices = list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur)))
     if form.validate_on_submit():
         create_report(conn, form.sender_name.data, form.report_content.data)
-        return redirect('/inventory_see')
+        return redirect('/create_report')
+    if request.method == 'POST':
+        num = int(request.form.get('_method'))
+        num = data[num - 1][0]
+        delete_report_by_id(conn, num)
+        return redirect('/create_report')
     return render_template('inventory_templates/admin_reports.html', form=form,
         user_role=user_role,
-        active_page="create_report")
+        active_page="create_report", data=data)
 
 
 @app.route('/purchases', methods=['GET', 'POST'])

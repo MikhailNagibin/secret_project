@@ -14,4 +14,35 @@
     </div>
     {{ form.submit(class="btn btn-primary") }}
 </form>
+<br>
+<h3>План</h3>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Пользователь</th>
+        <th>Отчет</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if data %}
+    {% for item in data %}
+    <tr>
+        <td>{{ item[1] }}</td>
+        <td>{{ item[2] }}</td>
+        <td>
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="{{ loop.index }}">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                </form>
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4" class="text-center">Нет отчетов</td>
+    </tr>
+    {% endif %}
+    </tbody>
+</table>
 {% endblock %}
