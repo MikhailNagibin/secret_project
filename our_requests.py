@@ -233,7 +233,7 @@ def delete_purchase(conn: psycopg2.extensions.connection, num: int)  -> None:
 
 
 def get_all_reports(cur: psycopg2.extensions.cursor) -> list[tuple]:
-    cur.execute('select * from reports')
+    cur.execute('select r.id, u.firstname, u.surname,  r.report  from reports as r inner join users as u on u.id = r.name')
     return cur.fetchall()
 
 

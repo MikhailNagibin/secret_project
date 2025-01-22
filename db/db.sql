@@ -51,8 +51,9 @@ supplier varchar(50)
 
 create table reports (
 id serial primary key unique,
-name varchar(50),
-report text
+name int,
+report text,
+foreign key(name)  references users(id)
 );
 
 

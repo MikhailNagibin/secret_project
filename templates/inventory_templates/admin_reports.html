@@ -28,8 +28,8 @@
     {% if data %}
     {% for item in data %}
     <tr>
-        <td>{{ item[1] }}</td>
-        <td>{{ item[2] }}</td>
+        <td>{{ item[1] + " " + item[2] }}</td>
+        <td>{{ item[3] }}</td>
         <td>
                 <form method="POST" style="display: inline;">
                     <input type="hidden" name="_method" value="{{ loop.index }}">
