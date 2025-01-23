@@ -1,0 +1,19 @@
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+.btn-primary {
+    background-color: #ff9800;
+    border-color: #ff9800;
+}
+.btn-primary:hover {
+    background-color: #e68900;
+    border-color: #e68900;
+}
+.alert {
+    margin-top: 10px;
+}

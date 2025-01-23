@@ -1,0 +1,37 @@
+{% extends "inventory_templates/base_inventory.html" %}
+
+{% block content %}
+<h3>Список заявок</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Имя пользователя</th>
+            <th>Инвентарь</th>
+            <th>Количество</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if inventory_items %}
+        {% for item in inventory_items %}
+        <tr>
+            <td>{{ item[1] + ' ' + item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+            <td>
+                <a href="/application/True/{{ loop.index }}" class="btn btn-warning btn-sm">Одобрить</a>
+            </td>
+            <td>
+                <a href="/application/False/{{ loop.index }}" class="btn btn-warning btn-sm">Отклонить</a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4" class="text-center">Нет активных заявок</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

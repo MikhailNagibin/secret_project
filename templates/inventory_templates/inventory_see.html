@@ -4,30 +4,69 @@
 <h4>Список инвентаря</h4>
 <table class="table table-bordered">
     <thead>
-        <tr>
-            <th>Название</th>
-            <th>Количество</th>
-            <th>Состояние</th>
-            {% if user_role == 'Администратор' %}
-                <th>Действия</th>
-            {% endif %}
-        </tr>
+    <tr>
+        <th>Название</th>
+        <th>Количество</th>
+        <th>Состояние</th>
+        {% if user_role == 'Администратор' %}
+        <th>Действия</th>
+        {% endif %}
+    </tr>
     </thead>
     <tbody>
-        {% for item in inventory_items %}
-        <tr>
-            <td>{{ item[0] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            {% if user_role == 'Администратор' %}
-            <td>
-                <form action="/inventory_see/{{ loop.index }}" method="GET">
-                    <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
-                </form>
-            </td>
-             {% endif %}
-        </tr>
-        {% endfor %}
+    {% if inventory_items %}
+    {% for item in inventory_items %}
+    <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }}</td>
+        <td>{{ item[2] }}</td>
+        {% if user_role == 'Администратор' %}
+        <td>
+            <form action="/inventory_see/{{ loop.index }}" method="GET">
+                <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
+            </form>
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4" class="text-center">Нет доступного инвентаря</td>
+    </tr>
+    {% endif %}
     </tbody>
 </table>
+
+<div>
+    {% if user_role != 'Администратор' %}
+    {% if data %}
+        <h3>Инвентарь, закрепленный за Вами</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Количество</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="itemId" value="{{ loop.index }}">
+                            <button type="submit" class="btn btn-warning btn-sm">Сдать</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h3>За Вами не закреплен инвентарь</h3>
+    {% endif %}
+    {% endif %}
+</div>
 {% endblock %}

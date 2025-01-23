@@ -6,11 +6,7 @@
     {{ form.hidden_tag() }}
     <div class="mb-3">
         {{ form.sender_name.label }}
-        {{ form.sender_name(class="form-control", placeholder="Введите имя отправляющего") }}
-    </div>
-    <div class="mb-3">
-        {{ form.report_date.label }}
-        {{ form.report_date(class="form-control", type="date") }}
+        {{ form.sender_name(class="form-select") }}
     </div>
     <div class="mb-3">
         {{ form.report_content.label }}
@@ -18,4 +14,35 @@
     </div>
     {{ form.submit(class="btn btn-primary") }}
 </form>
+<br>
+<h3>План</h3>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Пользователь</th>
+        <th>Отчет</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if data %}
+    {% for item in data %}
+    <tr>
+        <td>{{ item[1] + " " + item[2] }}</td>
+        <td>{{ item[3] }}</td>
+        <td>
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="{{ loop.index }}">
+                    <button type="submit" class="btn btn-warning">Удалить</button>
+                </form>
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="4" class="text-center">Нет отчетов</td>
+    </tr>
+    {% endif %}
+    </tbody>
+</table>
 {% endblock %}

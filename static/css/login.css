@@ -1,0 +1,28 @@
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+.btn-primary {
+    background-color: #ff9800;
+    border-color: #ff9800;
+    color: #fff;
+    width: 100%;
+}
+.btn-primary:hover {
+    background-color: #e68900;
+    border-color: #e68900;
+}
+.form-control {
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+.navbar-brand {
+    font-size: 0.9em;
+    text-decoration: none;
+    margin-right: 0rem;
+    white-space: nowrap;
+}

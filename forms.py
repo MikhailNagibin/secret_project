@@ -45,7 +45,8 @@ class EditInventoryForm(FlaskForm):
     cur = conn.cursor()
     data = get_conditions(cur)
     name = StringField("Название", validators=[DataRequired()])
-    quantity = IntegerField("Количество", validators=[DataRequired()])
+    quantity = IntegerField("Количество", validators=[DataRequired(),
+                        NumberRange(min=1, message="Количество должно быть не меньше 1.")])
     status = SelectField(
         "Состояние", choices=data, coerce=int, default=data[0]
     )
@@ -55,13 +56,11 @@ class EditInventoryForm(FlaskForm):
 
 
 class ReportForm(FlaskForm):
-    sender_name = StringField('Имя отправляющего', validators=[
-        DataRequired(message="Поле обязательно для заполнения."),
-        Length(max=100, message="Имя должно быть не длиннее 100 символов.")
-    ])
-    report_date = DateField('Дата отчета', validators=[
-        DataRequired(message="Укажите дату.")
-    ])
+    sender_name = SelectField('На чьё имя отчёт',
+                            choices=[],
+                            validators=[
+                                        DataRequired(message="Выберите Пользователя.")
+                                        ])
     report_content = TextAreaField('Содержание отчета', validators=[
         DataRequired(message="Введите текст отчета."),
         Length(max=1000, message="Отчет не должен превышать 1000 символов.")
@@ -87,3 +86,51 @@ class PurchasePlanForm(FlaskForm):
         NumberRange(min=1, message="Количество должно быть не меньше 1.")
     ])
     submit = SubmitField('Добавить в план закупок')
+
+
+class AssignInventoryForm(FlaskForm):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    # print(list(map(lambda x: [x[0], x[0]], get_free_inventory_for_zacrep(cur))))
+    user_name = SelectField('Выберите Пользователя',
+                            choices=list(map(lambda x: [x[0], x[1] + ' ' + x[2]], get_users_id_firstname_and_surname(cur))),
+                            validators=[
+                                        DataRequired(message="Выберите Пользователя.")
+                                        ])
+    item = SelectField('Выберите инвентарь', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    quantity = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    submit = SubmitField('Закрепить')
+
+
+class RequestInventoryForm(FlaskForm):
+    item = SelectField('Название инвентаря', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    quantity = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    submit = SubmitField('Запросить')
+
+
+class ConfirmDetachInventoryForm(FlaskForm):
+    user_name = StringField('Имя пользозвателя')
+    item = StringField('Инвентарь')
+    quantity = StringField('Количество')
+    submit = SubmitField('Открепить')
+
+class Repair_Requests(FlaskForm):
+    item = SelectField('Выберите инвентарь', choices=[], validators=[
+        DataRequired(message="Выберите инвентарь.")
+    ])
+    count = IntegerField('Количество', validators=[
+        DataRequired(message="Введите количество."),
+        NumberRange(min=1, message="Количество должно быть не меньше 1.")
+    ])
+    replace = BooleanField("Возможно починить")
+    submit = SubmitField('Добавить запрос')
