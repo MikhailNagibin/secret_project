@@ -1,6 +1,10 @@
 body {
     display: flex;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
+
+
 
 .sidebar:not(.hidden) {
 
