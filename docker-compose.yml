@@ -11,7 +11,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d/
 
   web:
-    build: .
+    image: mishanagibin/pre-professional-olympiad
     ports:
       - "8000:8000"
     depends_on:
