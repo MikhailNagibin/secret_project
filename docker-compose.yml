@@ -3,20 +3,27 @@ services:
     image: postgres:17
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: QWERTY
+      POSTGRES_PASSWORD: qwerty
       POSTGRES_DB: predprof
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db:/docker-entrypoint-initdb.d/
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - mynetwork
 
   web:
-    image: mishanagibin/pre-professional-olympiad
+    image: mishanagibin/super-secret-project
     ports:
       - "8000:8000"
     depends_on:
       - db
     restart: always
+    networks:
+      - mynetwork
 
-volumes:
-  postgres_data: {}
+networks:
+  mynetwork:
+    driver: bridge
