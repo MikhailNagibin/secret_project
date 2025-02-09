@@ -1,4 +1,14 @@
 # pre-professional-Olympiad
+# Файловая система
+
+```
+/project
+├──/db
+|  ├──/data
+|  └──/init
+|     └── init.sql
+└── docker-compose.yml
+```
 
 # Содержание 
 - [Краткое описание](#краткое-описание)
