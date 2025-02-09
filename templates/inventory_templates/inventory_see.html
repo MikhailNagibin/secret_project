@@ -2,7 +2,7 @@
 
 {% block content %}
 <h4>Список инвентаря</h4>
-<table class="table table-bordered">
+<table class="table table-bordered d-none d-md-table">
     <thead>
     <tr>
         <th>Название</th>
@@ -36,6 +36,30 @@
     {% endif %}
     </tbody>
 </table>
+
+<!-- Карточки для мобильных устройств -->
+<div class="d-md-none">
+    {% if inventory_items %}
+    {% for item in inventory_items %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Название: {{ item[0] }}</h5>
+            <p class="card-text">Количество: {{ item[1] }}</p>
+            <p class="card-text">Состояние: {{ item[2] }}</p>
+            {% if user_role == 'Администратор' %}
+            <form action="/inventory_see/{{ loop.index }}" method="GET">
+                <button type="submit" class="btn btn-warning btn-sm">Редактировать</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center">
+        <p>Нет доступного инвентаря</p>
+    </div>
+    {% endif %}
+</div>
 
 <div>
     {% if user_role != 'Администратор' %}

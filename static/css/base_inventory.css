@@ -1,19 +1,9 @@
 body {
     display: flex;
-    overflow-x: hidden;
-    box-sizing: border-box;
 }
 
-
-
-.sidebar:not(.hidden) {
-
+.sidebar.hidden {
     transform: translateX(100%);
-}
-
-
-.hidden {
-    transform: translateX(0);
 }
 
 .sidebar {
@@ -26,11 +16,19 @@ body {
     right: 0;
     top: 0;
     transition: transform 0.5s ease;
+    z-index: 999; /* Поверх кнопки */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Тень для красоты */
 }
+
 .content {
     flex-grow: 1;
     padding: 20px;
-    margin-right: 250px;
+    margin-right: 0; /* Убираем отступ, чтобы контент занимал всё пространство */
+    transition: margin-right 0.5s ease;
+}
+
+.sidebar:not(.hidden) ~ .content {
+    margin-right: 250px; /* Отступ контента только при открытом меню */
 }
 
 .sidebar a {
@@ -41,17 +39,15 @@ body {
     border-radius: 5px;
 }
 
-
-
 .sidebar a.active {
     background-color: #ff9800;
     color: #fff;
 }
 
-
 .sidebar a:hover {
     background-color: #ec8d00;
 }
+
 .sidebar a:not(.active):hover {
     background-color: #dee2e6;
 }
@@ -60,23 +56,41 @@ body {
     background-color: #ff9800;
     border-color: #ff9800;
 }
+
 .btn-primary:hover, .btn-warning:hover {
     background-color: #e68900;
     border-color: #e68900;
 }
+
 .btn-danger:hover {
     background-color: #b30000 !important;
     border-color: #990000 !important;
 }
 
 #toggle-sidebar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            transition: all 0.5s ease;
-        }
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    transition: all 0.5s ease;
+}
 
 .sidebar:not(.hidden) + #toggle-sidebar {
-            right: 250px;
-        }
+    right: 260px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
